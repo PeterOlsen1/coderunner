@@ -1,6 +1,6 @@
 <script>
-    const title = "code-runner";
-    let word = $state("code-runner");
+    const title = "code-runner;";
+    let word = $state("code-runner;");
     let curIdx = title.length - 1;
     let blinker;
 
@@ -15,10 +15,10 @@
     function animateTitle(direction) {
         return new Promise((resolve, reject) => {
             let interval = setInterval(() => {
-                curIdx = direction(curIdx) % title.length;
-                word = title.slice(0, curIdx + 1);
+                curIdx = direction(curIdx);
+                word = title.slice(0, curIdx);
 
-                if (curIdx === title.length - 1 || curIdx === 0) {
+                if (curIdx === title.length || curIdx === 0) {
                     clearInterval(interval);
                     return resolve();
                 }
@@ -30,29 +30,30 @@
      * Start animation effect on load
     */
     $effect(async () => {
+        setInterval(() => {
+            blinker.style.opacity = blinker.style.opacity === "1" ? "0" : "1";
+        }, 500);
+
         let increment = (val) => val + 1;
         let decrement = (val) => val - 1;
 
         async function firstAnimation() {
             await animateTitle(decrement);
-            await sleep(1000);
+            await sleep(500);
             await animateTitle(increment);
-            await sleep(1000);
+            await sleep(2000);
         }
 
+        await sleep(1000);
         firstAnimation();
 
 
         setInterval(async () => {
             await animateTitle(decrement);
-            await sleep(1000);
+            await sleep(500);
             await animateTitle(increment);
-            await sleep(1000);
-        }, 4000);
-
-        setInterval(() => {
-            blinker.style.opacity = blinker.style.opacity === "1" ? "0" : "1";
-        }, 500);
+            await sleep(2000);
+        }, 4500);
     });
 </script>
 
