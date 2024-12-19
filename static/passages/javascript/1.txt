@@ -1,0 +1,4 @@
+hi {
+    const data = await fetch('/passages/python/1.txt');
+    return await data.text();
+}

@@ -1,13 +1,27 @@
 <script>
     import { onMount } from "svelte";
     import Page from "../+page.svelte";
+    import { createPassageDataObject, createDisplayFromPassageObject, getText } from "../../utils/passages/passage_generator.js";
 
-    let text = `def funny:
-    return n * 2`;
-    
-    let lines = text.split('\n');
-    let all = lines.map((line) => line.split(' '));
-    let words = text.split(' ');
+    let text = $state('');
+    let lines, all, words;
+
+    onMount(async () => {
+        text = await getText(language);
+        lines = text.split('\n');
+        all = lines.map((line) => line.split(' '));
+        words = text.split(' ');
+    });
+
+    let language = $state('c++');
+
+    async function languageSelection() {
+        text = await getText(language);
+        lines = text.split('\n');
+        all = lines.map((line) => line.split(' '));
+        words = text.split(' ');
+    }
+
 
     let userText;
     let curIdx = $state(0);
@@ -25,33 +39,10 @@
     // set up the function that displays the snippet
     let display = $derived.by(() => {
         let slicedText = text.slice(curIdx);
-        let linesDerived = slicedText.split('\n');
-        let allDerived = linesDerived.map((line) => line.split(' '));
-
-        let out = "";
-        for (let line of allDerived) {
-            let lineOut = "";
-            for (let word of line) {
-                if (word == '') {
-                    if (line.length > 1) {
-                        lineOut += '&nbsp;';
-                    }
-                    else {
-                        newLine = true;
-                    }
-                }
-                else {
-                    lineOut += word +  ' ';
-                }
-            }
-            lineOut = lineOut.slice(0, -1);
-            lineOut += '<br>';
-            out += lineOut;
-        }
-
-        console.log(out);
-        return out;
-    });    
+        return createDisplayFromPassageObject(
+            createPassageDataObject(slicedText)
+        );
+    }); 
 
 
     /**
@@ -81,14 +72,11 @@
      * @param e event
      */
     function handleInput(e) {
-        console.log(e);
         if (e.key === 'Tab') {
             e.preventDefault();
 
-            console.log('hello')
-            console.log(all[line][0])
             if (curWordIdx == 0 && all[line][0] === '') {
-                word += tabLength - 1;
+                word += tabLength;
                 curIdx += tabLength;
                 const span = document.createElement('span');
                 span.innerHTML = '&nbsp;&nbsp;&nbsp;&nbsp;';
@@ -99,13 +87,14 @@
         if (e.key === 'q') {
             console.log(all);
             console.log(`\ncurWordIdx: ${curWordIdx}\nword: ${word}`);
+            console.log('display: ' + display);
+            debugUserText();
+            return;
         }
 
         //they got the right letter or they're at the end of the line
         if (e.key == all[line][word][curWordIdx] || (e.key === ' ' && curWordIdx == all[line][word].length)
-            || (e.key === 'Enter' && newLine)) {
-
-            console.log('correct!');
+            || (e.key === 'Enter' && curWordIdx == all[line][word].length && word == all[line].length - 1)) {
 
             //user inputted a space. the word is done
             if (e.key === ' ') {
@@ -118,6 +107,7 @@
             else if (e.key === 'Enter') {
                 curLineIdx++;
                 curWordIdx = 0;
+                word = 0;
                 curIdx++;
                 line++;
                 const br = document.createElement('br');
@@ -149,6 +139,35 @@
             console.log(`incorrect!\nwords: ${all[line]}\ncurWordIdx: ${curWordIdx}\nword: ${word}\nyou need to type: ${all[line][word]}`)
             incorrectLetter(e.key);
         }
+    }   
+
+    /**
+     * Go back one character
+     */
+     function handleBackspace() {
+        if (curIdx === 0) {
+            return;
+        }
+
+        if (word === 0 && curWordIdx === 0) {
+            console.log('backspace line')
+            line -= 1;
+            word = all[line].length - 1;
+            curWordIdx = all[line][word].length + 1;
+        }
+
+        curIdx--;
+        curWordIdx--;
+        const node = userText.childNodes[userText.childNodes.length - 1];
+        console.log(node.innerHTML);
+        if (node.innerHTML == '&nbsp;') {
+            console.log('hello')
+            word--;
+            curWordIdx = all[line][word].length;
+        }
+        node.remove();
+
+        debugUserText();
     }
 
 
@@ -159,39 +178,14 @@
         let currentWord = all[line][word];
         curIdx -= curWordIdx;
 
+        if (!curWordIdx) {
+            return;
+        }
+
         for (let i = 0; i < curWordIdx; i++) {
             userText.childNodes[userText.childNodes.length - 1].remove();
         }
         curWordIdx = 0;
-    }
-    
-
-    /**
-     * Go back one character
-     */
-    function handleBackspace() {
-        if (curIdx === 0) {
-            return;
-        }
-
-        if (word === 0 && curWordIdx === 0) {
-            console.log('hello?')
-            line -= 1;
-            console.log(all[line]);
-            word = all[line].length;
-            curWordIdx = all[line][word].length;
-        }
-
-        curIdx--;
-        curWordIdx--;
-        const node = userText.childNodes[userText.childNodes.length - 1];
-        if (node.innerText == ' ') {
-            word--;
-            curWordIdx = all[line][word].length;
-        }
-        node.remove();
-
-        debugUserText();
     }
 
 
@@ -204,6 +198,9 @@
         curWordIdx++;
         const span = document.createElement('span');
         span.innerText = l;
+        if (l === ' ') {
+            span.innerHTML = '&nbsp;';
+        }
         userText.appendChild(span);
     }
 
@@ -227,14 +224,14 @@
         for (let node of userText.childNodes) {
             out += node.innerText;
         }
-        console.log(out);
+        console.log('user text: ' + out);
     }
 
 
     /**
      * When the user hits enter focus the text area
     */
-    onMount(() => {
+    onMount(async () => {
         document.addEventListener('keyup', (e) => {
             if (e.key === "Enter") {
                 document.querySelector("textarea").focus();
@@ -253,15 +250,30 @@
     .passage-text {
         color: rgba(255, 255, 255, 0.377)
     }
+
+    .cursor {
+        position: absolute;
+        width: 0;
+    }
+
+    select {
+        color: black;
+    }
 </style>
 
 
 <div>
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <!-- svelte-ignore a11y_no_static_element_interactions -->
-    <div class="text-container text-xl" onclick={focusInput}>
-        <span bind:this={userText}></span><span class="passage-text">{@html display}</span>
+    <div class="text-container text-xl relative" onclick={focusInput}>
+        <span bind:this={userText}></span><span class="cursor">|</span><span class="passage-text">{@html display}</span>
     </div>
     <br>
     <textarea type="text" onkeydown={handleInput}></textarea>
+    Language: <select name="" id="" bind:value={language} onchange={languageSelection}>
+        <option value="python">python</option>
+        <option value="javascript">javascript</option>
+        <option value="css">css</option>
+        <option value="c++">c++</option>
+    </select>
 </div>
