@@ -57,5 +57,6 @@ export function createDisplayFromPassageObject(object) {
  */
 export async function getText(language) {
     const data = await fetch(`/passages/${language}/1.txt`);
+    // const data = await fetch(`/passages/assembly/1.txt`);
     return await data.text();
 }

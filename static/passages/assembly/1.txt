@@ -13,7 +13,7 @@ written dword     ?
         .stack
 
         .code
-_go:        
+_go:
         ; handle = GetStdHandle(-11)
         push      -11
         call      _GetStdHandle@4

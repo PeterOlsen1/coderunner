@@ -37,6 +37,7 @@
     let line = 0;
     let curLineIdx = 0;
     let tabLength = 4;
+    let autoTab = true;
 
     function focusInput() {
         document.querySelector("textarea").focus();
@@ -81,13 +82,34 @@
         if (e.key === 'Tab') {
             e.preventDefault();
 
-            if (curWordIdx == 0 && all[line][0] === '') {
-                word += tabLength;
-                curIdx += tabLength;
-                for (let i = 0; i < 4; i++) {
-                    const span = document.createElement('span');
-                    span.innerHTML = '&nbsp;';
-                    userText.appendChild(span);
+            //auto tab is on, automatically do all the spaces for them
+            if (autoTab && word == 0 && curWordIdx == 0) {
+                while (all[line][word] === '' || all[line][word] === ' ') {
+                    correctLetter(' ');
+                    word++;
+                    curWordIdx = 0;
+                }
+
+                return;
+            }
+
+            //treat a tab as {tabLength} spaces
+            for (let i = 0; i < tabLength; i++) {
+                console.log('curwordidx: ' + curWordIdx); 
+                if (curWordIdx == all[line][word].length || all[line][word] === '' || all[line][word] === ' ') {
+                    correctLetter(' ');
+                    word++;
+                    curWordIdx = 0;
+                    console.log('Space valid'); 
+                }
+                else {
+                    if (curWordIdx + i >= lines[line].length) {
+                        return;
+                    }
+
+                    // if (curWordIdx)
+                    console.log('Space not valid');
+                    incorrectLetter(' ');
                 }
             }
         }
@@ -114,6 +136,7 @@
             //user inputted an enter. line is done
             else if (e.key === 'Enter') {
                 if (line === all.length - 1) {
+                    console.log('congrats! you did it');
                     return;
                 }
                 curLineIdx++;
@@ -140,6 +163,7 @@
             }
         }
 
+        //handle backspace
         else if (e.key === 'Backspace') {
             if (e.ctrlKey) {
                 handleCtrlBackspace();
@@ -149,6 +173,7 @@
             }
         }
         
+        //user inputted a correct key but it's not right
         else if (validLetter(e.key)) {
             console.log(`incorrect!\nwords: ${all[line]}\ncurWordIdx: ${curWordIdx}\nword: ${word}\nyou need to type: ${all[line][word]}`)
             incorrectLetter(e.key);
@@ -208,6 +233,11 @@
      * @param l letter
      */
     function correctLetter(l) {
+        //don't let the user go past the end of the line
+        if (word == all[line].length - 1 && curWordIdx == all[line][word].length) {
+            return;
+        }
+
         curIdx++;
         curWordIdx++;
         const span = document.createElement('span');
@@ -235,6 +265,17 @@
         // span.className = 'red';
         span.style.color = 'rgb(223, 66, 66)';
         span.innerText = l;
+
+        if (l === ' ') {
+            let correct = all[line][word][curWordIdx - 1];
+            if (correct == ' ' || !correct) {
+                span.innerHTML = '&nbsp;';
+            }
+            else {
+                span.innerHTML = correct;
+            }
+        }
+
         userText.appendChild(span);
     }
 
@@ -292,17 +333,18 @@
 
 
 <div>
+    <textarea type="text" onkeydown={handleInput}></textarea>
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div class="text-container text-xl relative" onclick={focusInput}>
         <span bind:this={userText}></span><span class="cursor">|</span><span class="passage-text">{@html display}</span>
     </div>
     <br>
-    <textarea type="text" onkeydown={handleInput}></textarea>
     Language: <select name="" id="" bind:value={language} onchange={languageSelection}>
         <option value="python">python</option>
         <option value="javascript">javascript</option>
         <option value="css">css</option>
         <option value="c++">c++</option>
+        <option value="assembly">assembly</option>
     </select>
 </div>
