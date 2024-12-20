@@ -13,13 +13,20 @@
         words = text.split(' ');
     });
 
-    let language = $state('c++');
+    let language = $state('javascript');
 
     async function languageSelection() {
         text = await getText(language);
         lines = text.split('\n');
         all = lines.map((line) => line.split(' '));
         words = text.split(' ');
+
+        userText.innerHTML = '';
+        curWordIdx = 0;
+        word = 0;
+        line = 0;
+        curLineIdx = 0;
+        curIdx = 0;
     }
 
 
@@ -29,7 +36,6 @@
     let word = 0;
     let line = 0;
     let curLineIdx = 0;
-    let newLine = false;
     let tabLength = 4;
 
     function focusInput() {
@@ -78,9 +84,11 @@
             if (curWordIdx == 0 && all[line][0] === '') {
                 word += tabLength;
                 curIdx += tabLength;
-                const span = document.createElement('span');
-                span.innerHTML = '&nbsp;&nbsp;&nbsp;&nbsp;';
-                userText.appendChild(span);
+                for (let i = 0; i < 4; i++) {
+                    const span = document.createElement('span');
+                    span.innerHTML = '&nbsp;';
+                    userText.appendChild(span);
+                }
             }
         }
 
@@ -91,13 +99,13 @@
             debugUserText();
             return;
         }
-
+        
         //they got the right letter or they're at the end of the line
         if (e.key == all[line][word][curWordIdx] || (e.key === ' ' && curWordIdx == all[line][word].length)
             || (e.key === 'Enter' && curWordIdx == all[line][word].length && word == all[line].length - 1)) {
 
             //user inputted a space. the word is done
-            if (e.key === ' ') {
+            if (e.key === ' ' && !(word == all[line].length - 1)) {
                 correctLetter(' ');
                 curWordIdx = 0;
                 word += 1;
@@ -105,6 +113,9 @@
 
             //user inputted an enter. line is done
             else if (e.key === 'Enter') {
+                if (line === all.length - 1) {
+                    return;
+                }
                 curLineIdx++;
                 curWordIdx = 0;
                 word = 0;
@@ -112,11 +123,14 @@
                 line++;
                 const br = document.createElement('br');
                 userText.appendChild(br);
-                newLine = false;
             }
 
             //regular key that's correct
             else {
+                if (word == all[line].length - 1 && curWordIdx == all[line][word].length) {
+                    return;
+                }
+
                 correctLetter(e.key);
 
                 //check if they finished the whole thing
@@ -210,6 +224,11 @@
      * @param l letter
      */
     function incorrectLetter(l) {
+        //user is at the end of a line. don't let them go any further
+        if (word == all[line].length - 1 && curWordIdx == all[line][word].length) {
+            return;
+        }
+
         curIdx++;
         curWordIdx++;
         const span = document.createElement('span');
@@ -254,6 +273,16 @@
     .cursor {
         position: absolute;
         width: 0;
+        animation: blink 0.75s infinite;
+    }
+
+    @keyframes blink {
+        0%, 100% {
+            color: white;
+        }
+        50% {
+            color: transparent;
+        }
     }
 
     select {

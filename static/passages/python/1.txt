@@ -1,2 +1,3 @@
 def funny(n):
+
     return n * 2
