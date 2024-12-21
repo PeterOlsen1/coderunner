@@ -43,7 +43,7 @@
      * Get a random text from the selected languages
      */
     async function getRandomText() {
-        if (language === "None") {
+        if (selectedLanguages.length === 0) {
             return;
         }
 
@@ -338,6 +338,7 @@
             noneSelected = false;
 
             if (selectedLanguages.length === 1) {
+                console.log(selectedLanguages);
                 getRandomText();
             }
         }
@@ -352,7 +353,7 @@
 
         document.addEventListener('keyup', (e) => {
             if (e.key === "Enter") {
-                document.querySelector("textarea").focus();
+                focusInput();
             }
         });
     });
@@ -406,28 +407,30 @@
     {/if}
     
     <!-- {#if !currentlyTesting} -->
-        <br>
-        <br>
-        <div class="w-full grid grid-cols-3">
-            <div>
-                Language: {language}
-            </div>
-            <div></div>
-            <div class="flex justify-end gap-2 cursor-pointer" onclick={getRandomText}>
-                <img class="w-4" src="https://www.svgrepo.com/show/110727/redo-arrow-symbol.svg" alt="redo" style="filter: invert(1);"> New Passage
-            </div>
-        </div>
-        <br>
-        <div class="languages flex gap-3">
-            {#each offeredLanguages as lang}
-                <div onclick={() => addRemoveLanguage(lang)}>
-                    <Language lang={lang} selectable={true} selected={selectedLanguages.find((l) => l == lang)}></Language>
+        <div traisition:fade={{duration: 500}}>
+            <br>
+            <br>
+            <div class="w-full grid grid-cols-3">
+                <div>
+                    Language: {language}
                 </div>
-            {/each}
+                <div></div>
+                <div class="flex justify-end gap-2 cursor-pointer" onclick={getRandomText}>
+                    <img class="w-4" src="https://www.svgrepo.com/show/110727/redo-arrow-symbol.svg" alt="redo" style="filter: invert(1);"> New Passage
+                </div>
+            </div>
+            <br>
+            <div class="languages flex gap-3">
+                {#each offeredLanguages as lang}
+                    <div onclick={() => addRemoveLanguage(lang)}>
+                        <Language lang={lang} selectable={true} selected={selectedLanguages.find((l) => l == lang)}></Language>
+                    </div>
+                {/each}
+            </div>
+            
+            <small class="w-full text-center block mt-4 mb-8">
+                hit 'enter' to start the test
+            </small>
         </div>
-        
-        <small class="w-full text-center block mt-4 mb-8">
-            hit 'enter' to start the test
-        </small>
     <!-- {/if} -->
 </div>
