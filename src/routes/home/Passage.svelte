@@ -12,7 +12,7 @@
     let lines, all, words;
 
     let selectedLanguages = ['python'];
-    let language = $state('javascript');
+    let language = $state('python');
     let noneSelected = $state(false);
 
     
@@ -36,11 +36,17 @@
     let autoTab = true;
 
     let currentlyTesting = $state(false);
+    let extendingWord = false;
     let timeSinceLastInput = 0;
     let time = $state(0);
     let timer;
     let lastInput = 0;
     let timeoutThreshhold = 800; //in ms
+
+    /**
+     * Set all correct / incorrect keystrokes at theri given times
+     */
+    let testData = {keystrokes: []};
 
     function startTimer() {
         timer = setInterval(() => {
@@ -159,6 +165,7 @@
         if (e.key === 'Tab') {
             e.preventDefault();
             handleTab();
+            return;
         }
 
         if (e.key === 'q') {
@@ -168,13 +175,24 @@
             debugUserText();
             return;
         }
-        
+
+        if (e.key === 'Escape') {
+            currentlyTesting = false;
+            stopTimer();
+            return;
+        }
+
+        if (e.key !== ' ' && e.key != 'Enter'  && e.key != 'Backspace' && curWordIdx == all[line][word].length) {
+            return;
+        }
+
         //they got the right letter or they're at the end of the line
         if (e.key == all[line][word][curWordIdx] || (e.key === ' ' && curWordIdx == all[line][word].length)
             || (e.key === 'Enter' && curWordIdx == all[line][word].length && word == all[line].length - 1)) {
 
             //user inputted a space. the word is done
             if (e.key === ' ' && !(word == all[line].length - 1)) {
+                testData.keystrokes.push({time: time, key: ' ', correct: true});
                 correctLetter(' ');
                 curWordIdx = 0;
                 word += 1;
@@ -200,13 +218,16 @@
                     return;
                 }
 
+                testData.keystrokes.push({time: time, key: e.key, correct: true});
                 correctLetter(e.key);
 
                 //check if they finished the whole thing
                 if (line === all.length - 1 && word === all[line].length - 1 && curWordIdx === all[line][word].length) {
                     console.log('you did it!');
                     stopTimer();
+                    testData.time = time;
                     currentlyTesting = false;
+                    console.log(testData);
                 }
             }
         }
@@ -224,6 +245,7 @@
         //user inputted a correct key but it's not right
         else if (validLetter(e.key)) {
             console.log(`incorrect!\nwords: ${all[line]}\ncurWordIdx: ${curWordIdx}\nword: ${word}\nyou need to type: ${all[line][word]}`)
+            testData.keystrokes.push({time: time, key: e.key, correct: false, correctLetter: all[line][word][curWordIdx]});
             incorrectLetter(e.key);
         }
     }   
