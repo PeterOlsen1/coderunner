@@ -4,6 +4,8 @@
     import { createPassageDataObject, createDisplayFromPassageObject, getText } from "../../utils/passages/passage_generator.js";
     import Language from "../../lib/components/Language.svelte";
     import { LANGUAGES } from "../../utils/conig";
+    import { fade } from "svelte/transition";
+
 
     let offeredLanguages = Object.keys(LANGUAGES);
 
@@ -34,10 +36,17 @@
     /** Auto tab will only work if user is at the start of a line */
     let autoTab = true;
 
+    let currentlyTesting = $state(false);
+    let timeSinceLastInput = 0;
+
     /**
      * Get a random text from the selected languages
      */
     async function getRandomText() {
+        if (language === "None") {
+            return;
+        }
+
         language = selectedLanguages[Math.floor(Math.random() * selectedLanguages.length)];
         // return await getText(language);
         languageSelection();
@@ -96,6 +105,8 @@
      * @param e event
      */
     function handleInput(e) {
+        currentlyTesting = true;
+
         if (e.key === 'Tab') {
             e.preventDefault();
             handleTab();
@@ -145,6 +156,7 @@
                 //check if they finished the whole thing
                 if (line === all.length - 1 && word === all[line].length - 1 && curWordIdx === all[line][word].length) {
                     console.log('you did it!');
+                    currentlyTesting = false;
                 }
             }
         }
@@ -315,7 +327,8 @@
                 noneSelected = true;
                 language = "None";
             }
-            else if (language === lang) {
+
+            if (language === lang) {
                 getRandomText();
                 noneSelected = false;
             }
@@ -323,6 +336,10 @@
         else {
             selectedLanguages = [...selectedLanguages, lang];
             noneSelected = false;
+
+            if (selectedLanguages.length === 1) {
+                getRandomText();
+            }
         }
     }
 
@@ -387,28 +404,30 @@
             <span bind:this={userText}></span><span class="cursor">|</span><span class="passage-text">{@html display}</span>
         </div>
     {/if}
-
-    <br>
-    <br>
-    <div class="w-full grid grid-cols-3">
-        <div>
-            Language: {language}
-        </div>
-        <div></div>
-        <div class="flex justify-end gap-2 cursor-pointer" onclick={getRandomText}>
-            <img class="w-4" src="https://www.svgrepo.com/show/110727/redo-arrow-symbol.svg" alt="redo" style="filter: invert(1);"> New Passage
-        </div>
-    </div>
-    <br>
-    <div class="languages flex gap-3">
-        {#each offeredLanguages as lang}
-            <div onclick={() => addRemoveLanguage(lang)}>
-                <Language lang={lang} selectable={true} selected={selectedLanguages.find((l) => l == lang)}></Language>
+    
+    <!-- {#if !currentlyTesting} -->
+        <br>
+        <br>
+        <div class="w-full grid grid-cols-3">
+            <div>
+                Language: {language}
             </div>
-        {/each}
-    </div>
-      
-    <small class="w-full text-center block mt-4 mb-8">
-        hit 'enter' to start the test
-    </small>
+            <div></div>
+            <div class="flex justify-end gap-2 cursor-pointer" onclick={getRandomText}>
+                <img class="w-4" src="https://www.svgrepo.com/show/110727/redo-arrow-symbol.svg" alt="redo" style="filter: invert(1);"> New Passage
+            </div>
+        </div>
+        <br>
+        <div class="languages flex gap-3">
+            {#each offeredLanguages as lang}
+                <div onclick={() => addRemoveLanguage(lang)}>
+                    <Language lang={lang} selectable={true} selected={selectedLanguages.find((l) => l == lang)}></Language>
+                </div>
+            {/each}
+        </div>
+        
+        <small class="w-full text-center block mt-4 mb-8">
+            hit 'enter' to start the test
+        </small>
+    <!-- {/if} -->
 </div>
