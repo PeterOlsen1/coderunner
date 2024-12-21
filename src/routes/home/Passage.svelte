@@ -3,7 +3,7 @@
     import Page from "../+page.svelte";
     import { createPassageDataObject, createDisplayFromPassageObject, getText } from "../../utils/passages/passage_generator.js";
     import Language from "../../lib/components/Language.svelte";
-    import { LANGUAGES } from "../../utils/conig";
+    import { LANGUAGES } from "../../utils/config";
 
 
     let offeredLanguages = Object.keys(LANGUAGES);
@@ -485,7 +485,7 @@
             {/if}
         </div>
         <br>
-        <div class="languages w-full flex gap-3">
+        <div class="languages w-full flex gap-3 justify-center flex-wrap max-w-screen-md">
             {#each offeredLanguages as lang}
                 <!-- svelte-ignore a11y_click_events_have_key_events -->
                 <!-- svelte-ignore a11y_no_static_element_interactions -->

@@ -1,5 +1,5 @@
 <script>
-    import { LANGUAGES } from "../../utils/conig";
+    import { LANGUAGES } from "../../utils/config";
     let { lang, selectable, selected } = $props();
     let node;
 
