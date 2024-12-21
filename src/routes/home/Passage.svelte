@@ -2,18 +2,46 @@
     import { onMount } from "svelte";
     import Page from "../+page.svelte";
     import { createPassageDataObject, createDisplayFromPassageObject, getText } from "../../utils/passages/passage_generator.js";
+    import Language from "../../lib/components/Language.svelte";
+    import { LANGUAGES } from "../../utils/conig";
+
+    let offeredLanguages = Object.keys(LANGUAGES);
 
     let text = $state('');
     let lines, all, words;
 
-    onMount(async () => {
-        text = await getText(language);
-        lines = text.split('\n');
-        all = lines.map((line) => line.split(' '));
-        words = text.split(' ');
-    });
-
+    let selectedLanguages = ['python'];
     let language = $state('javascript');
+    let noneSelected = $state(false);
+
+    
+    /** Container referring to where the user's text is displayed */
+    let userText;
+
+    /** Current typing index. used to run the 'derived.by' function */
+    let curIdx = $state(0);
+
+    /** The user's position within the current WORD */
+    let curWordIdx = 0;
+
+    /** The index of the current word the user is typing within the line */
+    let word = 0;
+
+    /** The index of the current line the user is typing on within 'all' */
+    let line = 0;
+    let tabLength = 4;
+
+    /** Auto tab will only work if user is at the start of a line */
+    let autoTab = true;
+
+    /**
+     * Get a random text from the selected languages
+     */
+    async function getRandomText() {
+        language = selectedLanguages[Math.floor(Math.random() * selectedLanguages.length)];
+        // return await getText(language);
+        languageSelection();
+    }
 
     async function languageSelection() {
         text = await getText(language);
@@ -25,19 +53,8 @@
         curWordIdx = 0;
         word = 0;
         line = 0;
-        curLineIdx = 0;
         curIdx = 0;
     }
-
-
-    let userText;
-    let curIdx = $state(0);
-    let curWordIdx = 0;
-    let word = 0;
-    let line = 0;
-    let curLineIdx = 0;
-    let tabLength = 4;
-    let autoTab = true;
 
     function focusInput() {
         document.querySelector("textarea").focus();
@@ -81,37 +98,7 @@
     function handleInput(e) {
         if (e.key === 'Tab') {
             e.preventDefault();
-
-            //auto tab is on, automatically do all the spaces for them
-            if (autoTab && word == 0 && curWordIdx == 0) {
-                while (all[line][word] === '' || all[line][word] === ' ') {
-                    correctLetter(' ');
-                    word++;
-                    curWordIdx = 0;
-                }
-
-                return;
-            }
-
-            //treat a tab as {tabLength} spaces
-            for (let i = 0; i < tabLength; i++) {
-                console.log('curwordidx: ' + curWordIdx); 
-                if (curWordIdx == all[line][word].length || all[line][word] === '' || all[line][word] === ' ') {
-                    correctLetter(' ');
-                    word++;
-                    curWordIdx = 0;
-                    console.log('Space valid'); 
-                }
-                else {
-                    if (curWordIdx + i >= lines[line].length) {
-                        return;
-                    }
-
-                    // if (curWordIdx)
-                    console.log('Space not valid');
-                    incorrectLetter(' ');
-                }
-            }
+            handleTab();
         }
 
         if (e.key === 'q') {
@@ -139,7 +126,6 @@
                     console.log('congrats! you did it');
                     return;
                 }
-                curLineIdx++;
                 curWordIdx = 0;
                 word = 0;
                 curIdx++;
@@ -179,6 +165,42 @@
             incorrectLetter(e.key);
         }
     }   
+
+    
+    /**
+     * Handle Tab input
+     */
+    function handleTab() {
+        //auto tab is on, automatically do all the spaces for them
+        if (autoTab && word == 0 && curWordIdx == 0) {
+            while (word < all[line].length - 1 && (all[line][word] === '' || all[line][word] === ' ')) {
+                correctLetter(' ');
+                word++;
+                curWordIdx = 0;
+            }
+
+            return;
+        }
+
+        //treat a tab as {tabLength} spaces
+        for (let i = 0; i < tabLength; i++) {
+            if (word != all[line].length - 1 && (curWordIdx == all[line][word].length || all[line][word] === '' || all[line][word] === ' ')) {
+                correctLetter(' ');
+                word++;
+                curWordIdx = 0;
+                console.log('Space valid'); 
+            }
+            else {
+                if (curWordIdx + i >= lines[line].length) {
+                    return;
+                }
+
+                // if (curWordIdx)
+                console.log('Space not valid');
+                incorrectLetter(' ');
+            }
+        }
+    }
 
     /**
      * Go back one character
@@ -262,18 +284,16 @@
         curIdx++;
         curWordIdx++;
         const span = document.createElement('span');
-        // span.className = 'red';
         span.style.color = 'rgb(223, 66, 66)';
-        span.innerText = l;
 
-        if (l === ' ') {
-            let correct = all[line][word][curWordIdx - 1];
-            if (correct == ' ' || !correct) {
-                span.innerHTML = '&nbsp;';
-            }
-            else {
-                span.innerHTML = correct;
-            }
+        let correct = all[line][word][curWordIdx - 1];
+        if (correct == ' ' || !correct) {
+            span.innerHTML = '_';
+            word++;
+            curWordIdx = 0;
+        }
+        else {
+            span.innerHTML = correct;
         }
 
         userText.appendChild(span);
@@ -287,11 +307,32 @@
         console.log('user text: ' + out);
     }
 
+    function addRemoveLanguage(lang) {
+        if (selectedLanguages.includes(lang)) {
+            selectedLanguages = selectedLanguages.filter((l) => l != lang);
+
+            if (!selectedLanguages.length) {
+                noneSelected = true;
+                language = "None";
+            }
+            else if (language === lang) {
+                getRandomText();
+                noneSelected = false;
+            }
+        }
+        else {
+            selectedLanguages = [...selectedLanguages, lang];
+            noneSelected = false;
+        }
+    }
+
 
     /**
      * When the user hits enter focus the text area
     */
     onMount(async () => {
+        getRandomText(language);
+
         document.addEventListener('keyup', (e) => {
             if (e.key === "Enter") {
                 document.querySelector("textarea").focus();
@@ -334,17 +375,40 @@
 
 <div>
     <textarea type="text" onkeydown={handleInput}></textarea>
-    <!-- svelte-ignore a11y_click_events_have_key_events -->
-    <!-- svelte-ignore a11y_no_static_element_interactions -->
-    <div class="text-container text-xl relative" onclick={focusInput}>
-        <span bind:this={userText}></span><span class="cursor">|</span><span class="passage-text">{@html display}</span>
+
+    {#if noneSelected}
+        <div class="text-center text-xl">
+            Please select a language
+        </div>
+    {:else} 
+        <!-- svelte-ignore a11y_click_events_have_key_events -->
+        <!-- svelte-ignore a11y_no_static_element_interactions -->
+        <div class="text-container text-xl relative" onclick={focusInput}>
+            <span bind:this={userText}></span><span class="cursor">|</span><span class="passage-text">{@html display}</span>
+        </div>
+    {/if}
+
+    <br>
+    <br>
+    <div class="w-full grid grid-cols-3">
+        <div>
+            Language: {language}
+        </div>
+        <div></div>
+        <div class="flex justify-end gap-2 cursor-pointer" onclick={getRandomText}>
+            <img class="w-4" src="https://www.svgrepo.com/show/110727/redo-arrow-symbol.svg" alt="redo" style="filter: invert(1);"> New Passage
+        </div>
     </div>
     <br>
-    Language: <select name="" id="" bind:value={language} onchange={languageSelection}>
-        <option value="python">python</option>
-        <option value="javascript">javascript</option>
-        <option value="css">css</option>
-        <option value="c++">c++</option>
-        <option value="assembly">assembly</option>
-    </select>
+    <div class="languages flex gap-3">
+        {#each offeredLanguages as lang}
+            <div onclick={() => addRemoveLanguage(lang)}>
+                <Language lang={lang} selectable={true} selected={selectedLanguages.find((l) => l == lang)}></Language>
+            </div>
+        {/each}
+    </div>
+      
+    <small class="w-full text-center block mt-4 mb-8">
+        hit 'enter' to start the test
+    </small>
 </div>
