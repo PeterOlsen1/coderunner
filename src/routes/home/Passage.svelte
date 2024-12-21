@@ -4,7 +4,6 @@
     import { createPassageDataObject, createDisplayFromPassageObject, getText } from "../../utils/passages/passage_generator.js";
     import Language from "../../lib/components/Language.svelte";
     import { LANGUAGES } from "../../utils/conig";
-    import { fade } from "svelte/transition";
 
 
     let offeredLanguages = Object.keys(LANGUAGES);
@@ -38,6 +37,48 @@
 
     let currentlyTesting = $state(false);
     let timeSinceLastInput = 0;
+    let time = $state(0);
+    let timer;
+    let lastInput = 0;
+    let timeoutThreshhold = 800; //in ms
+
+    function startTimer() {
+        timer = setInterval(() => {
+            if (time - lastInput > timeoutThreshhold) {
+                stopTimer();
+                currentlyTesting = false;
+            }
+
+            time += 10;
+        }, 10);
+    }
+
+    function stopTimer() {
+        clearInterval(timer);
+        timer = '';
+    }
+
+    //derive the time display
+    let timeDisplay = $derived.by(() => {
+        let out = "";
+        let tempTime = time;
+        if (time > 60000) {
+            let minutes = Math.floor(tempTime / 60000);
+            if (minutes < 10) {
+                out += '0';
+            }
+            out += `${Math.floor(tempTime / 60000)}:`;
+            tempTime %= 60000;
+        }
+
+        let seconds = Math.floor(tempTime / 1000);
+        if (seconds < 10) {
+            out += '0';
+        }
+
+        out += (tempTime / 1000).toFixed(2);
+        return out;
+    });
 
     /**
      * Get a random text from the selected languages
@@ -46,6 +87,9 @@
         if (selectedLanguages.length === 0) {
             return;
         }
+
+        time = 0;
+        lastInput = 0;
 
         language = selectedLanguages[Math.floor(Math.random() * selectedLanguages.length)];
         // return await getText(language);
@@ -105,7 +149,12 @@
      * @param e event
      */
     function handleInput(e) {
-        currentlyTesting = true;
+        if (!currentlyTesting) {
+            currentlyTesting = true;
+            startTimer();
+        }
+
+        lastInput = time;
 
         if (e.key === 'Tab') {
             e.preventDefault();
@@ -156,6 +205,7 @@
                 //check if they finished the whole thing
                 if (line === all.length - 1 && word === all[line].length - 1 && curWordIdx === all[line][word].length) {
                     console.log('you did it!');
+                    stopTimer();
                     currentlyTesting = false;
                 }
             }
@@ -326,6 +376,7 @@
             if (!selectedLanguages.length) {
                 noneSelected = true;
                 language = "None";
+                text = "";
             }
 
             if (language === lang) {
@@ -352,7 +403,8 @@
         getRandomText(language);
 
         document.addEventListener('keyup', (e) => {
-            if (e.key === "Enter") {
+            if (e.key === "Enter" && !noneSelected) {
+                // currentlyTesting = true;
                 focusInput();
             }
         });
@@ -388,6 +440,14 @@
     select {
         color: black;
     }
+
+    .language-container {
+        /* background-color: #1f1f1f; */
+        border-radius: 0.5rem;
+        margin-top: 3rem;
+        opacity: 1;
+        transition: opacity 0.3s;
+    }
 </style>
 
 
@@ -399,6 +459,10 @@
             Please select a language
         </div>
     {:else} 
+        <div class="text-left text-xl mb-2 flex gap-3">
+            <img src="https://www.svgrepo.com/show/23258/timer.svg" alt="timer" class="w-4" style="filter: invert(1);">
+            <span>{timeDisplay}</span>
+        </div>
         <!-- svelte-ignore a11y_click_events_have_key_events -->
         <!-- svelte-ignore a11y_no_static_element_interactions -->
         <div class="text-container text-xl relative" onclick={focusInput}>
@@ -406,31 +470,33 @@
         </div>
     {/if}
     
-    <!-- {#if !currentlyTesting} -->
-        <div traisition:fade={{duration: 500}}>
-            <br>
-            <br>
-            <div class="w-full grid grid-cols-3">
-                <div>
-                    Language: {language}
-                </div>
-                <div></div>
+    <div class="language-container" style="opacity: {!currentlyTesting ? 1 : 0}">
+        <div class="w-full grid grid-cols-3">
+            <div>
+                Language: {language}
+            </div>
+            <div></div>
+            {#if !noneSelected}
+                <!-- svelte-ignore a11y_click_events_have_key_events -->
+                <!-- svelte-ignore a11y_no_static_element_interactions -->
                 <div class="flex justify-end gap-2 cursor-pointer" onclick={getRandomText}>
                     <img class="w-4" src="https://www.svgrepo.com/show/110727/redo-arrow-symbol.svg" alt="redo" style="filter: invert(1);"> New Passage
                 </div>
-            </div>
-            <br>
-            <div class="languages flex gap-3">
-                {#each offeredLanguages as lang}
-                    <div onclick={() => addRemoveLanguage(lang)}>
-                        <Language lang={lang} selectable={true} selected={selectedLanguages.find((l) => l == lang)}></Language>
-                    </div>
-                {/each}
-            </div>
-            
-            <small class="w-full text-center block mt-4 mb-8">
-                hit 'enter' to start the test
-            </small>
+            {/if}
         </div>
-    <!-- {/if} -->
+        <br>
+        <div class="languages w-full flex gap-3">
+            {#each offeredLanguages as lang}
+                <!-- svelte-ignore a11y_click_events_have_key_events -->
+                <!-- svelte-ignore a11y_no_static_element_interactions -->
+                <div onclick={() => addRemoveLanguage(lang)}>
+                    <Language lang={lang} selectable={true} selected={selectedLanguages.find((l) => l == lang)}></Language>
+                </div>
+            {/each}
+        </div>
+        
+        <small class="w-full text-center block mt-4 mb-8">
+            hit 'enter' to start the test
+        </small>
+    </div>
 </div>
