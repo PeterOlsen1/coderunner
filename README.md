@@ -7,4 +7,4 @@ This is the place to be for programmers looking to increase their typing speed, 
 
 The code isn't randomly generated, which means I need you, the user, to upload passages of your own for others to test their speed on.
 
-So what are you waiting for? Head over to <a href="code-runner.web.app">coderunner</a> and start typing today!
+So what are you waiting for? Head over to <a href="https://code-runner.web.app">coderunner</a> and start typing today!
