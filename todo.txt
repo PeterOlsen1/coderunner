@@ -1,3 +1,5 @@
-in code editor
-    figure out backspaces
-    make a better way to represent passages?
+code editor basically done
+
+Make it so that when people upload passages, they have to get approved?
+
+Use errors to bubble up information from the database file?

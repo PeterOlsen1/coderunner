@@ -1,5 +1,5 @@
 <script>
-    import { signInWithGoogle, signInWithGithub, signInAnon, user } from "../utils/auth";
+    import { signInWithGoogle, signInWithGithub, signInAnon, user } from "../utils/firebase/auth";
     import { onMount } from "svelte";
     export const ssr = false;
 
