@@ -1,38 +1,10 @@
-# sv
+# Welcome to coderunner!
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+[![My Skills](https://skillicons.dev/icons?i=svelte,firebase,tailwind,javascript,css&theme=dark)](https://skillicons.dev)
 
-## Creating a project
 
-If you're seeing this, you've probably already done this step. Congrats!
+This is the place to be for programmers looking to increase their typing speed, while also learning the syntax of various differnet languages. Inspired by monkeytype, coderunner is a minimalist typing speed game to test how good of a typist you really are.
 
-```bash
-# create a new project in the current directory
-npx sv create
+The code isn't randomly generated, which means I need you, the user, to upload passages of your own for others to test their speed on.
 
-# create a new project in my-app
-npx sv create my-app
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+So what are you waiting for? Head over to <a href="code-runner.web.app">coderunner</a> and start typing today!
