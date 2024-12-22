@@ -48,14 +48,3 @@ export function createDisplayFromPassageObject(object) {
 
     return out;
 }
-
-/**
- * Get some text from a passage file
- * 
- * @param {string} language specified programming language
- * @returns A string of text from a passage file in the given langauge
- */
-export async function getText(language) {
-    const data = await fetch(`/passages/${language}/1.txt`);
-    return await data.text();
-}

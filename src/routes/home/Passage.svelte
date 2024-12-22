@@ -1,7 +1,7 @@
 <script>
     import { onMount } from "svelte";
     import Page from "../+page.svelte";
-    import { createPassageDataObject, createDisplayFromPassageObject, getText } from "../../utils/passages/passage_generator.js";
+    import { createPassageDataObject, createDisplayFromPassageObject } from "../../utils/passages/passage_generator.js";
     import Language from "../../lib/components/Language.svelte";
     import { getAllLanguages, getRandomPassage } from "../../utils/firebase/db";
 
