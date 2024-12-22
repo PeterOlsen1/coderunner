@@ -3,12 +3,10 @@
     import Page from "../+page.svelte";
     import { createPassageDataObject, createDisplayFromPassageObject, getText } from "../../utils/passages/passage_generator.js";
     import Language from "../../lib/components/Language.svelte";
-    import { LANGUAGES } from "../../utils/config";
-
-
-    let offeredLanguages = Object.keys(LANGUAGES);
+    import { getAllLanguages, getRandomPassage } from "../../utils/firebase/db";
 
     let text = $state('');
+    let currentTextData = $state({});
     let lines, all, words;
 
     let selectedLanguages = ['python'];
@@ -42,6 +40,7 @@
     let timer;
     let lastInput = 0;
     let timeoutThreshhold = 800; //in ms
+    let data = getAllLanguages();
 
     /**
      * Set all correct / incorrect keystrokes at theri given times
@@ -86,6 +85,7 @@
         return out;
     });
 
+
     /**
      * Get a random text from the selected languages
      */
@@ -98,12 +98,9 @@
         lastInput = 0;
 
         language = selectedLanguages[Math.floor(Math.random() * selectedLanguages.length)];
-        // return await getText(language);
-        languageSelection();
-    }
 
-    async function languageSelection() {
-        text = await getText(language);
+        currentTextData = await getRandomPassage(language);
+        text = currentTextData.passage;
         lines = text.split('\n');
         all = lines.map((line) => line.split(' '));
         words = text.split(' ');
@@ -114,6 +111,7 @@
         line = 0;
         curIdx = 0;
     }
+
 
     function focusInput() {
         document.querySelector("textarea").focus();
@@ -508,13 +506,19 @@
         </div>
         <br>
         <div class="languages w-full flex gap-3 justify-center flex-wrap max-w-screen-md">
-            {#each offeredLanguages as lang}
-                <!-- svelte-ignore a11y_click_events_have_key_events -->
-                <!-- svelte-ignore a11y_no_static_element_interactions -->
-                <div onclick={() => addRemoveLanguage(lang)}>
-                    <Language lang={lang} selectable={true} selected={selectedLanguages.find((l) => l == lang)}></Language>
-                </div>
-            {/each}
+            {#await data}
+                <div class="loader"></div>
+            {:then data}
+                {#each data as lang}
+                    {#if !lang.unapproved}
+                        <!-- svelte-ignore a11y_click_events_have_key_events -->
+                        <!-- svelte-ignore a11y_no_static_element_interactions -->
+                        <div onclick={() => addRemoveLanguage(lang.language)}>
+                            <Language lang={lang.language} selectable={true} selected={selectedLanguages.find((l) => l == lang.language)}></Language>
+                        </div>
+                    {/if}
+                {/each}
+            {/await}
         </div>
         
         <small class="w-full text-center block mt-4 mb-8">

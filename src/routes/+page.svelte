@@ -61,6 +61,10 @@
     });
 </script>
 
+<svelte:head>
+    <title>code-runner;</title>
+</svelte:head>
+
 <div class="grid h-screen place-items-center text-white text-4xl">
     <div class="flex flex-col items-center gap-3">
         <div class="text-left">

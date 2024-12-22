@@ -30,6 +30,13 @@ export class PassageNotFoundError extends Error {
     }
 }
 
+
+/**
+ * Add a new user to the database.
+ * Called on every login.
+ * 
+ * @param {string} userId 
+ */
 export async function addNewUser(userId) {
     const docRef = doc(usersRef, userId);
 
@@ -39,25 +46,84 @@ export async function addNewUser(userId) {
     }
 }
 
+
+/**
+ * Add a language to the passages collection
+ * @param {string} language 
+ */
 export async function addLanguage(language) {
     const docRef = doc(passagesRef, language);
-    return await setDoc(docRef, {nextId: 1});
+    await setDoc(docRef, {nextId: 1});
 }
 
+
+/**
+ * Add a language to the approval collection
+ * 
+ * @param {string} language 
+ */
 async function addApprovalLanguage(language) {
     const docRef = doc(approvalRef, language);
-    return await setDoc(docRef, {});
+    await setDoc(docRef, {});
 }
 
+
+/**
+ * Get a list of all languages in the 'passages' collection
+ * @returns ^
+ */
 export async function getAllLanguages() {
     const querySnapshot = await getDocs(passagesRef);
     let languages = [];
     querySnapshot.forEach((doc) => {
-        languages.push(doc.id);
+        let obj = {
+            language: doc.id,
+            url: doc.data().url,
+            unapproved: doc.data().unapproved
+        }
+        languages.push(obj);
     });
 
     return languages;
 }
+
+
+/**
+ * Get a given passage
+ * 
+ * @param {string} language 
+ * @param {number} id 
+ * @returns 
+ */
+export async function getPassage(language, id) {
+    const docRef = doc(passagesRef, language, 'passages', id.toString());
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+        return docSnap.data();
+    }
+    else {
+        throw new PassageNotFoundError("Passage not found!");
+    }
+}
+
+
+/**
+ * Get a random passage from a given langauge
+ * 
+ * @param {string} language 
+ * @returns A random passage
+ */
+export async function getRandomPassage(language) {
+    const languagePassagesRef = collection(passagesRef, language, 'passages');
+    const docSnap = await getDocs(languagePassagesRef);
+    let out = [];
+    docSnap.forEach((doc) => {
+        out.push(doc.data());
+    });
+
+    return out[Math.floor(Math.random() * out.length)];
+}
+
 
 /**
  * 
