@@ -30,6 +30,12 @@ export class PassageNotFoundError extends Error {
     }
 }
 
+export class NotLoggedInError extends Error {
+    constructor(message) {
+        super(message);
+    }
+}
+
 
 /**
  * Add a new user to the database.
@@ -126,71 +132,6 @@ export async function getRandomPassage(language) {
 
 
 /**
- * 
- * @param {string} language 
- * @param {string} difficulty 
- * @param {string} passage 
- * @param {string} source Source URL for the code
- * @returns 
- */
-export async function addPassage(language, difficulty, passage, source) {
-    try {
-        if (!user) {
-            return false;
-        }
-
-        let languageRef = doc(passagesRef, language);
-        let docSnap = await getDoc(languageRef);
-        if (!docSnap.exists()) {
-            await addLanguage(language);
-            languageRef = doc(passagesRef, language);
-            docSnap = await getDoc(languageRef);
-        }
-        
-        let data = docSnap.data();
-        let nextId = data.nextId;
-        data.nextId++;
-        await updateDoc(languageRef, data);
-    
-        if (!nextId) {
-            nextId = 1;
-        }
-
-        const lines = passage.split('\n').length;
-        // let languages = await getAllLanguages();
-        // if (!languages.includes(language)) {
-        //     throw new LanguageNotFoundError("Language does not exist!");
-        // }
-    
-        const passageRef = doc(languageRef, 'passages', nextId.toString());
-        await setDoc(passageRef, {
-            difficulty,
-            lines,
-            passage,
-            source: source || "",
-            id: nextId,
-            created: Timestamp.now(),
-            uploadedBy: user.uid
-        });
-
-        // const userRef = doc(usersRef, user.uid);
-        // const docSnapUser = await getDoc(userRef);
-        // data = await docSnapUser.data();
-        // const uploadedPassages = data.uploadedPassages || {};
-        // uploadedPassages[language] = uploadedPassages[language] || [];
-        // uploadedPassages[language].push(nextId);
-        // data.uploadedPassages = uploadedPassages;
-        // await setDoc(userRef, data);
-
-        return true;
-    }
-    catch (error) {
-        console.log(error);
-        return false;
-    }
-}
-
-/**
  * Let only moderators actually upload passages. Everyone else should get approved.
  * 
  * @returns 
@@ -198,7 +139,7 @@ export async function addPassage(language, difficulty, passage, source) {
 export async function uploadForApproval(language, difficulty, passage, source) {
     try {
         if (!user) {
-            return false;
+            throw new NotLoggedInError("User not logged in!");
         }
 
         // get the language collection reference
@@ -297,17 +238,17 @@ export async function approvePassage(language, id) {
             throw new PassageNotFoundError("Passage does not exist!");
         }
 
+        //mark the language as approved
+        let languageDataRef = doc(passagesRef, language);
+        let languageData = (await getDoc(languageDataRef)).data();
+        languageData.unapproved = false;
+
         //move data from pending to approved
         let passageData = passageSnap.data();
         const uploader = passageData.uploadedBy;
         await setDoc(doc(passagesRef, language), languageData);
         await setDoc(doc(passagesRef, language, 'passages', id.toString()), passageData);
         await deleteDoc(userPassageRef);
-
-        //mark the language as approved
-        let languageDataRef = doc(passagesRef, language);
-        let languageData = (await getDoc(languageDataRef)).data();
-        languagesData.unapproved = false;
 
         //remove from pending uploads
         const userRef = doc(usersRef, uploader);
@@ -324,6 +265,43 @@ export async function approvePassage(language, id) {
 
         await setDoc(userRef, data);
 
+        return true;
+    }
+    catch (error) {
+        console.log(error);
+        return false;
+    }
+}
+
+export async function denyPassage(language, id) {
+    try {
+        if (!user) {
+            throw new Error("User not logged in!");
+        }
+
+        //get the language collection that needs approval
+        let languageRef = doc(approvalRef, language);
+        let docSnap = await getDoc(languageRef);
+        if (!docSnap.exists()) {
+            throw new Error("Language does not exist!");
+        }
+
+        let userPassageRef = doc(languageRef, 'passages', id.toString());
+        let passageSnap = await getDoc(userPassageRef);
+        if (!passageSnap.exists()) {
+            throw new PassageNotFoundError("Passage does not exist!");
+        }
+
+        //remove from pending uploads
+        let data = passageSnap.data();
+        const uploader = data.uploadedBy;
+        const userRef = doc(usersRef, uploader);
+        const docSnapUser = await getDoc(userRef);
+        data = await docSnapUser.data();
+        data.pendingUploads[language] = data.pendingUploads[language].filter((x) => x !== id);
+        await setDoc(userRef, data);
+
+        await deleteDoc(userPassageRef);
         return true;
     }
     catch (error) {

@@ -1,7 +1,7 @@
 <script>
     import { LANGUAGES } from "../../utils/config";
     import Language from "$lib/components/Language.svelte";
-    import { addLanguage, addPassage, approvePassage, uploadForApproval } from "../../utils/firebase/db";
+    import { addLanguage, approvePassage, uploadForApproval } from "../../utils/firebase/db";
     import { onMount } from "svelte";
     import { ensureAuth, user } from "../../utils/firebase/auth";
     import Swal from "sweetalert2";
@@ -21,7 +21,7 @@
         difficulty = d;
     }
 
-    function upload() {
+    async function upload() {
         if (!user) {
             Swal.fire('You must be logged in to submit a passage.');
             return;
@@ -29,7 +29,9 @@
         
         const text = document.getElementById("text").value;
         const url = document.getElementById("url").value;
-        uploadForApproval(lang, difficulty, text, url);
+        await uploadForApproval(lang, difficulty, text, url);
+        await Swal.fire('Passage submitted for approval. Thank you!');
+        window.location.href = '/home';
         // approvePassage('python', 1);
     }
 
@@ -45,7 +47,7 @@
         if (!user) {
             Swal.fire('You must be logged in to submit a passage.');
         }
-    })
+    });
 </script>
 
 <svelte:head>

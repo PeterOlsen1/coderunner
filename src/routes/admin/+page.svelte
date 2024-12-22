@@ -1,11 +1,19 @@
 <script>
     import { ensureAuth, user } from "../../utils/firebase/auth";
     import { onMount } from "svelte";
-    import { getAllUnapprovedPassages, approvePassage } from "../../utils/firebase/db";
+    import { getAllUnapprovedPassages, approvePassage, denyPassage } from "../../utils/firebase/db";
     import Language from "$lib/components/Language.svelte";
 
-    let unapproved;
-    let unapprovedLanguages;
+    let unapproved = $state([]);
+    let unapprovedLanguages = $state([]);
+
+    function filterPassages(lang, id) {
+        unapproved[lang] = unapproved[lang].filter(p => p.id !== id);
+        if (unapproved[lang].length === 0) {
+            unapprovedLanguages = unapprovedLanguages.filter(l => l !== lang);
+        }
+    }
+
     onMount(async () => {
         await ensureAuth();
         if (!user) {
@@ -49,7 +57,10 @@
                         Lines: {passage.lines}
                     </div>
                     <textarea value={passage.passage} class="overflow-hidden"></textarea>
-                    <button class="bg-green-500 text-white p-2 rounded mt-3 mb-7" onclick={() => approvePassage(lang, passage.id)}>Approve</button>
+                    <div>
+                        <button class="bg-green-500 text-white p-2 rounded mt-3 mb-7" onclick={() => {filterPassages(lang, passage.id); approvePassage(lang, passage.id)}}>Approve</button>
+                        <button class="bg-red-500 text-white p-2 rounded mt-3 mb-7" onclick={() => {filterPassages(lang, passage.id); denyPassage(lang, passage.id)}}>Deny</button>    
+                    </div>
                 </div>
             {/each}
         {/each}

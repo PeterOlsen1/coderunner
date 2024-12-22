@@ -5,7 +5,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Source Code Pro', 'serif'], // Default sans-serif font
+        sans: ['Source Code Pro', 'serif'],
       },
     },
   },

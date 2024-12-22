@@ -4,15 +4,20 @@
     import { createPassageDataObject, createDisplayFromPassageObject } from "../../utils/passages/passage_generator.js";
     import Language from "../../lib/components/Language.svelte";
     import { getAllLanguages, getRandomPassage } from "../../utils/firebase/db";
-
+    import { showStats, testData } from "../../utils/passages/stats.svelte";
+    
+    /** Text the user must type*/
     let text = $state('');
-    let currentTextData = $state({});
     let lines, all, words;
 
+    /** List of selected languages*/
     let selectedLanguages = ['python'];
-    let language = $state('python');
-    let noneSelected = $state(false);
 
+    /** current language */
+    let language = $state('python');
+
+    /** No languages selcted*/
+    let noneSelected = $state(false);
     
     /** Container referring to where the user's text is displayed */
     let userText;
@@ -33,19 +38,23 @@
     /** Auto tab will only work if user is at the start of a line */
     let autoTab = true;
 
+    /** user is currently testing or not*/
     let currentlyTesting = $state(false);
-    let extendingWord = false;
-    let timeSinceLastInput = 0;
-    let time = $state(0);
-    let timer;
-    let lastInput = 0;
-    let timeoutThreshhold = 800; //in ms
-    let data = getAllLanguages();
 
-    /**
-     * Set all correct / incorrect keystrokes at theri given times
-     */
-    let testData = {keystrokes: []};
+    /** current test time */
+    let time = $state(0);
+
+    /** timer interval */
+    let timer;
+
+    /** time at which the last input was made*/
+    let lastInput = 0;
+
+    /** time at which the user will be unfocused*/
+    let timeoutThreshhold = 1000;
+
+    /** data for the open langauges*/
+    let languageData = getAllLanguages();
 
     function startTimer() {
         timer = setInterval(() => {
@@ -61,6 +70,7 @@
     function stopTimer() {
         clearInterval(timer);
         timer = '';
+        blurInput();
     }
 
     //derive the time display
@@ -99,8 +109,9 @@
 
         language = selectedLanguages[Math.floor(Math.random() * selectedLanguages.length)];
 
-        currentTextData = await getRandomPassage(language);
+        let currentTextData = await getRandomPassage(language);
         text = currentTextData.passage;
+        // text = 'type shit';
         lines = text.split('\n');
         all = lines.map((line) => line.split(' '));
         words = text.split(' ');
@@ -115,6 +126,10 @@
 
     function focusInput() {
         document.querySelector("textarea").focus();
+    }
+
+    function blurInput() {
+        document.querySelector("textarea").blur();
     }
 
     // set up the function that displays the snippet
@@ -156,6 +171,9 @@
         if (!currentlyTesting) {
             currentlyTesting = true;
             startTimer();
+            testData.keystrokes = [];
+            testData.language = language;
+            testData.passage = text;
         }
 
         lastInput = time;
@@ -199,7 +217,6 @@
             //user inputted an enter. line is done
             else if (e.key === 'Enter') {
                 if (line === all.length - 1) {
-                    console.log('congrats! you did it');
                     return;
                 }
                 curWordIdx = 0;
@@ -221,11 +238,15 @@
 
                 //check if they finished the whole thing
                 if (line === all.length - 1 && word === all[line].length - 1 && curWordIdx === all[line][word].length) {
-                    console.log('you did it!');
+                    showStats.state = true;
                     stopTimer();
                     testData.time = time;
                     currentlyTesting = false;
                     console.log(testData);
+
+                    //fetch a new passage after 1/2s so the user doesn't see it
+                    // (they will be on the stats screen)
+                    setTimeout(() => getRandomText(), 500);
                 }
             }
         }
@@ -293,7 +314,6 @@
         }
 
         if (word === 0 && curWordIdx === 0) {
-            console.log('backspace line')
             line -= 1;
             word = all[line].length - 1;
             curWordIdx = all[line][word].length + 1;
@@ -302,9 +322,7 @@
         curIdx--;
         curWordIdx--;
         const node = userText.childNodes[userText.childNodes.length - 1];
-        console.log(node.innerHTML);
         if (node.innerHTML == '&nbsp;') {
-            console.log('hello')
             word--;
             curWordIdx = all[line][word].length;
         }
@@ -422,9 +440,12 @@
     onMount(async () => {
         getRandomText(language);
 
-        document.addEventListener('keyup', (e) => {
+        document.addEventListener('keyup', async (e) => {
             if (e.key === "Enter" && !noneSelected) {
-                // currentlyTesting = true;
+                if (showStats.state) {
+                    console.log('hello?')
+                    showStats.state = false;
+                }
                 focusInput();
             }
         });
@@ -505,11 +526,11 @@
             {/if}
         </div>
         <br>
-        <div class="languages w-full flex gap-3 justify-center flex-wrap max-w-screen-md">
-            {#await data}
+        <div class="languages w-full flex gap-3 justify-center flex-wrap">
+            {#await languageData}
                 <div class="loader"></div>
-            {:then data}
-                {#each data as lang}
+            {:then languageData}
+                {#each languageData as lang}
                     {#if !lang.unapproved}
                         <!-- svelte-ignore a11y_click_events_have_key_events -->
                         <!-- svelte-ignore a11y_no_static_element_interactions -->
