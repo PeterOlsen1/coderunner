@@ -110,6 +110,22 @@ background-color: #303030;
 opacity: 8%;
 }
 
+:root div:where(.swal2-container) div:where(.swal2-popup){
+    background-color: #353434;
+    z-index: 1;
+    border: 1px solid #ffffff;
+    color: white;
+}
+
+.swal2-confirm {
+    background-color: rgba(200, 200, 200, 0.2);
+    border: 1px solid white;
+
+}
+
+::-webkit-scrollbar {
+    background-color: transparent;
+}
 
 /* HTML: <div class="loader"></div> */
 .loader {

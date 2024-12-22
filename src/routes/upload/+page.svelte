@@ -4,7 +4,7 @@
     import { addLanguage, addPassage, approvePassage, uploadForApproval } from "../../utils/firebase/db";
     import { onMount } from "svelte";
     import { ensureAuth, user } from "../../utils/firebase/auth";
-    import { handlers } from "svelte/legacy";
+    import Swal from "sweetalert2";
 
     let openLanguages = Object.keys(LANGUAGES);
 
@@ -22,6 +22,11 @@
     }
 
     function upload() {
+        if (!user) {
+            Swal.fire('You must be logged in to submit a passage.');
+            return;
+        }
+        
         const text = document.getElementById("text").value;
         const url = document.getElementById("url").value;
         uploadForApproval(lang, difficulty, text, url);
@@ -38,7 +43,7 @@
     onMount(async () => {
         await ensureAuth();
         if (!user) {
-            
+            Swal.fire('You must be logged in to submit a passage.');
         }
     })
 </script>
