@@ -1,6 +1,6 @@
 # Welcome to coderunner!
 
-[![My Skills](https://skillicons.dev/icons?i=svelte,firebase,tailwind,javascript,css&theme=dark)](https://skillicons.dev)
+[![My Skills](https://skillicons.dev/icons?i=svelte,firebase,tailwind,javascript,nodejs,css&theme=dark)](https://skillicons.dev)
 
 
 This is the place to be for programmers looking to increase their typing speed, while also learning the syntax of various differnet languages. Inspired by monkeytype, coderunner is a minimalist typing speed game to test how good of a typist you really are.
