@@ -34,7 +34,7 @@ export async function addNewUser(userId) {
     const docRef = doc(usersRef, userId);
 
     //add user if they don't exist
-    if (!await getDoc(docRef).exists()) {
+    if (!(await getDoc(docRef)).exists()) {
         await setDoc(docRef, {dateJoined: Timestamp.now()});
     }
 }
@@ -224,7 +224,7 @@ export async function approvePassage(language, id) {
             data.unapproved = false;
             await setDoc(languageRef, data);
         }
-        
+
         let userPassageRef = doc(languageRef, 'passages', id.toString());
         let passageSnap = await getDoc(userPassageRef);
         if (!passageSnap.exists()) {
@@ -233,10 +233,15 @@ export async function approvePassage(language, id) {
 
         //move data from pending to approved
         let passageData = passageSnap.data();
-        console.log(passageData);
         const uploader = passageData.uploadedBy;
+        await setDoc(doc(passagesRef, language), languageData);
         await setDoc(doc(passagesRef, language, 'passages', id.toString()), passageData);
         await deleteDoc(userPassageRef);
+
+        //mark the language as approved
+        let languageDataRef = doc(passagesRef, language);
+        let languageData = (await getDoc(languageDataRef)).data();
+        languagesData.unapproved = false;
 
         //remove from pending uploads
         const userRef = doc(usersRef, uploader);

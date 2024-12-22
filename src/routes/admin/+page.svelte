@@ -53,5 +53,12 @@
                 </div>
             {/each}
         {/each}
+        {#if !unapprovedLanguages}
+            <div>Loading...</div>
+        {:else}
+            {#if unapprovedLanguages.length === 0}
+                <div>No passages awaiting approval</div>
+            {/if}
+        {/if}
     </div>
 </div>
