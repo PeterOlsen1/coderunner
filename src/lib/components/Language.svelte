@@ -17,6 +17,7 @@
         background-color: transparent;
         transition: background-color 0.2s ease;
         user-select: none;
+        align-items: center;
     }
 
     .selected {

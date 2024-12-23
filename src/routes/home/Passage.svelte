@@ -51,10 +51,12 @@
     let lastInput = 0;
 
     /** time at which the user will be unfocused*/
-    let timeoutThreshhold = 1000;
+    let timeoutThreshhold = 1500;
 
     /** data for the open langauges*/
     let languageData = getAllLanguages();
+
+    let difficulty;
 
     function startTimer() {
         timer = setInterval(() => {
@@ -110,6 +112,7 @@
         language = selectedLanguages[Math.floor(Math.random() * selectedLanguages.length)];
 
         let currentTextData = await getRandomPassage(language);
+        difficulty = currentTextData.difficulty;
         text = currentTextData.passage;
         // text = 'type shit';
         lines = text.split('\n');
@@ -174,6 +177,7 @@
             testData.keystrokes = [];
             testData.language = language;
             testData.passage = text;
+            testData.difficulty = difficulty;
         }
 
         lastInput = time;
