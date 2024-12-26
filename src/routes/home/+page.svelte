@@ -29,7 +29,7 @@
     <div class="grid place-content-center h-full">
         <div class="flex justify-center w-screen">
             {#if showStats.state}
-                <div transition:fade class="w-screen h-screen fixed grid top-0 left-0 place-content-center">
+                <div transition:fade class="w-screen grid place-content-center">
                     <div>
                         <StatsDisplay />
                         <br>
@@ -42,10 +42,10 @@
             {/if}
 
             <!-- don't use transitions on this guy since i guess it adds an extra letter -->
-            <!-- <div class="w-screen h-screen fixed grid top-0 left-0 place-content-center 
-            passage-container" style="opacity: {showStats.state ? 0 : 1}">
+            <div class="w-screen h-screen fixed grid top-0 left-0 place-content-center 
+            passage-container" style="opacity: {showStats.state ? 0 : 1}; display: {showStats.state ? 'none' : 'grid'}">
                 <Passage />
-            </div> -->
+            </div>
         </div>
     </div>
 </div>

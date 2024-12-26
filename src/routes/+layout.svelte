@@ -7,10 +7,10 @@
 	export const prerender = true;
 </script>
 
-<div class="bg-neutral-800 min-h-screen overflow-x-hidden pr-0 w-screen">
+<div class="bg-neutral-800 min-h-screen overflow-x-hidden">
     {#if !excludeHeader}
-        <div class="pt-10"></div>
-        <div class="w-screen h-10 grid grid-cols-3 text-center text-2xl">
+        <div class="pt-6"></div>
+        <div class="h-10 grid grid-cols-3 text-center text-2xl">
             <div><a href="/upload">upload passage</a></div>
             <div><a href="/home">code-runner;</a></div>
             <div>profile</div>

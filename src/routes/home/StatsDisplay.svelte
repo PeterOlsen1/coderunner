@@ -15,7 +15,7 @@
         }
         return acc;
     }, 0);
-    let wpm = ((chars / 5) / (testData.time / 60000)).toFixed(2);
+    let rawWpm = ((chars / 5) / (testData.time / 60000)).toFixed(2);
     
 
     let correct = 0;
@@ -32,6 +32,8 @@
     let incorrectKeysToSort = Object.keys(incorrectKeys);
     incorrectKeysToSort.sort((a, b) => incorrectKeys[b] - incorrectKeys[a]);
 
+    let wpm  = ((correct / 5) / (testData.time / 60000)).toFixed(2);
+
     onMount(() => {
         createChart();
     })
@@ -39,7 +41,7 @@
 
 <div class="w-full flex flex-col justify-center gap-6">
     <div class="w-full text-center flex justify-center gap-4 pt-10 text-3xl">
-        <Language lang={testData.language} />
+        <Language lang={testData.language} /><div class="pt-2">| medium</div>
     </div>
     <div class="w-screen grid place-content-center" style="grid-template-columns: 3fr 7fr">
         <div class="w-full flex flex-col justify-center text-center gap-6">
@@ -59,8 +61,8 @@
                 {/each}
             </div>
         </div>
-        <div class="mr-20">
-            <canvas id="chart"></canvas>
+        <div class="mr-12 max-w-3xl">
+            <canvas style="width: 100%; height: 100%;" id="chart"></canvas>
         </div>
     </div>
 </div>

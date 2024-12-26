@@ -1,6 +1,8 @@
 export const LANGUAGES = {
     python: {
         link: "https://cdn.svgporn.com/logos/python.svg",
+        color: '#ffde57',
+        secondary: '#4584b6'
     },
     javascript: {
         link: "https://cdn.svgporn.com/logos/javascript.svg",
@@ -34,6 +36,8 @@ export const LANGUAGES = {
     },
     haskell: {
         link: "https://cdn.svgporn.com/logos/haskell-icon.svg",
+        color: 'rgb(69,58,98)',
+        secondary: 'rgb(143, 78, 139)'
     },
     ocaml: {
         link: "https://static-00.iconduck.com/assets.00/file-type-ocaml-icon-1024x892-v6ih1i0k.png",
