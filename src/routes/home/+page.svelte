@@ -32,20 +32,17 @@
                 <div transition:fade class="w-screen grid place-content-center">
                     <div>
                         <StatsDisplay />
-                        <br>
-                        <br>
-                        <div class="w-full flex justify-center">
-                            <button onclick={() => showStats.state = false} class="flex gap-2"><img class="w-4 relative top-1" src="https://www.svgrepo.com/show/110727/redo-arrow-symbol.svg" alt="redo" style="filter: invert(1);"> Test again</button>
-                        </div>
+                        <!-- <br>
+                        <br> -->
                     </div>
                 </div>
             {/if}
 
             <!-- don't use transitions on this guy since i guess it adds an extra letter -->
-            <div class="w-screen h-screen fixed grid top-0 left-0 place-content-center 
+            <!-- <div class="w-screen h-screen fixed grid top-0 left-0 place-content-center 
             passage-container" style="opacity: {showStats.state ? 0 : 1}; display: {showStats.state ? 'none' : 'grid'}">
                 <Passage />
-            </div>
+            </div> -->
         </div>
     </div>
 </div>

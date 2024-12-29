@@ -33,6 +33,24 @@
     incorrectKeysToSort.sort((a, b) => incorrectKeys[b] - incorrectKeys[a]);
 
     let wpm  = ((correct / 5) / (testData.time / 60000)).toFixed(2);
+    
+    //create an array that displays the time since the last keystroke
+    //we can use this to figure out the slowest keys
+    let timeSinceLastArray = testData.keystrokes.map((keystroke, i) => {
+        if (i === 0) {
+            return {
+                key: keystroke.key,
+                time: keystroke.time
+            };
+        }
+
+        return {
+            key: keystroke.key,
+            time: keystroke.time - testData.keystrokes[i - 1].time
+        };
+    });
+    timeSinceLastArray.sort((a, b) => b.time - a.time);
+    let timeSinceLastTopTen = timeSinceLastArray.slice(0, 10);
 
     onMount(() => {
         createChart();
@@ -41,10 +59,16 @@
 
 <div class="w-full flex flex-col justify-center gap-6">
     <div class="w-full text-center flex justify-center gap-4 pt-10 text-3xl">
-        <Language lang={testData.language} /><div class="pt-2">| medium</div>
+        <Language lang={testData.language} /><div class="pt-2">| {testData.difficulty}</div>
     </div>
     <div class="w-screen grid place-content-center" style="grid-template-columns: 3fr 7fr">
         <div class="w-full flex flex-col justify-center text-center gap-6">
+            <div>
+                <span class="text-2xl">
+                    <img src="https://www.svgrepo.com/show/23258/timer.svg" alt="timer" class="w-4" style="filter: invert(1);">
+                    time: {wpm}
+                </span>
+            </div>
             <div>
                 <span class="text-2xl">wpm: {wpm}</span>
                 <br>
@@ -52,17 +76,30 @@
                 <br>
                 incorrect: {incorrect}
             </div>
-            <div>
-                <span class="text-2xl">missed keys:</span>
-                <br>
-                {#each incorrectKeysToSort as key}
-                    {key}: {incorrectKeys[key]}
-                    <br>
-                {/each}
-            </div>
         </div>
-        <div class="mr-12 max-w-3xl">
-            <canvas style="width: 100%; height: 100%;" id="chart"></canvas>
+        <div class="mr-10 h-full max-h-[400px]">
+            <canvas height="100%" id="chart"></canvas>
+        </div>
+    </div>
+    <div class="w-full flex justify-center">
+        <button onclick={() => showStats.state = false} class="flex gap-2"><img class="w-4 relative top-1" src="https://www.svgrepo.com/show/110727/redo-arrow-symbol.svg" alt="redo" style="filter: invert(1);"> Test again</button>
+    </div>
+    <div class="w-full grid grid-cols-2 place-items-center text-center">
+        <div class="flex flex-col align-top h-full">
+            <span class="text-2xl">missed keys:</span>
+            <br>
+            {#each incorrectKeysToSort as key}
+                {key} : {incorrectKeys[key]}
+                <br>
+            {/each}
+        </div>
+        <div>
+            <span class="text-2xl">slowest keys:</span>
+            <br>
+            {#each timeSinceLastTopTen as timeSinceLastArray}
+                {timeSinceLastArray.key} : {timeSinceLastArray.time}ms
+                <br>
+            {/each}
         </div>
     </div>
 </div>
