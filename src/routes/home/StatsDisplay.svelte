@@ -2,6 +2,7 @@
     import { createChart, showStats, testData } from "../../utils/passages/stats.svelte";
     import { fade } from "svelte/transition";
     import { onMount } from "svelte";
+    import Keyboard from "$lib/components/Keyboard.svelte";
     import Language from "$lib/components/Language.svelte";
 
 
@@ -21,12 +22,14 @@
     let correct = 0;
     let incorrect = 0;
     let incorrectKeys = {};
+    let incorrectList = [];
     for (let letter of testData.keystrokes) {
         if (letter.correct) {
             correct += 1;
         } else {
             incorrect += 1;
             incorrectKeys[letter.key] = incorrectKeys[letter.key] ? incorrectKeys[letter.key] + 1 : 1;
+            incorrectList.push(letter);
         }
     }
     let incorrectKeysToSort = Object.keys(incorrectKeys);
@@ -63,11 +66,9 @@
     </div>
     <div class="w-screen grid place-content-center" style="grid-template-columns: 3fr 7fr">
         <div class="w-full flex flex-col justify-center text-center gap-6">
-            <div>
-                <span class="text-2xl">
-                    <img src="https://www.svgrepo.com/show/23258/timer.svg" alt="timer" class="w-4" style="filter: invert(1);">
-                    time: {wpm}
-                </span>
+            <div class="text-2xl flex justify-center gap-4">
+                <img src="https://www.svgrepo.com/show/23258/timer.svg" alt="timer" class="w-4" style="filter: invert(1);">
+                <span>time: {testData.time / 1000} s</span>
             </div>
             <div>
                 <span class="text-2xl">wpm: {wpm}</span>
@@ -101,5 +102,10 @@
                 <br>
             {/each}
         </div>
+    </div>
+    <div class="w-full flex justify-center flex-col text-center">
+        <span class="text-2xl">keyboard heatmap</span>
+        <br>
+        <Keyboard letters={incorrectList}/>
     </div>
 </div>
