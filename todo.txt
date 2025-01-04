@@ -1,5 +1,1 @@
-code editor basically done
-
-Make it so that when people upload passages, they have to get approved?
-
-Use errors to bubble up information from the database file?
+upload information to user profile

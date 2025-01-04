@@ -80,8 +80,17 @@
     }
 
     //helper function to get the document ref of a key
-    function getKey(letter) {
-        let coord = keymap[letter.toUpperCase()];
+    /**
+     * Get the coordinate of a key on the keybaord
+     * 
+     * @param letter letter to find
+     * @param coord optional coordinate to use in place of letter
+     * @returns the key element
+     */
+    function getKey(letter, coord=null) {
+        if (!coord) {
+            coord = keymap[letter.toUpperCase()];
+        }
         let row = coord[0] - 1;
         let col = coord[1] - 1;
         let key = keyboard.children[row].children[col];
@@ -91,7 +100,9 @@
     //make and populate a frequency table
     let frequency = {};
     for (let letter of letters) {
-        frequency[letter.correctLetter] = frequency[letter.correctLetter] ? frequency[letter.correctLetter] + 1 : 1;
+        console.log(letter);
+        let coord = keymap[letter.correctLetter.toUpperCase()];
+        frequency[coord] = frequency[coord] ? frequency[coord] + 1 : 1;
     }
 
     //sort it by most / least frequent
@@ -105,11 +116,11 @@
         colorGradient.push(color);
     }
     
+    //color keys on component mount
     onMount(() => {
-        getKey('Space');
-
-        frequencyToSort.forEach((letter, i) => {
-            let key = getKey(letter);
+        console.log(frequency);
+        frequencyToSort.forEach((coord, i) => {
+            let key = getKey('', JSON.parse(`[${coord}]`));
             key.style.backgroundColor = colorGradient[i];
         });
     });
