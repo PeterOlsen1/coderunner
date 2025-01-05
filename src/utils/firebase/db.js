@@ -325,3 +325,53 @@ export async function getAllUnapprovedPassages() {
 
     return out;
 }
+
+// ================== USER FUNCTIONS ==================
+
+export async function uploadTypedPassage(passageData, lang, passageId) {
+    try {
+        if (!user) {
+            throw new NotLoggedInError("User not logged in!");
+        }
+
+        const userRef = doc(usersRef, user.uid);
+        const docSnap = await getDoc(userRef);
+        let data = docSnap.data();
+
+        let correct = 0;
+        let incorrect = 0;
+        for (let key of passageData.keystrokes) {
+            if (key.correct) {
+                correct++;
+            }
+            else {
+                incorrect++;
+            }
+        }
+
+        data.correct = data.correct ? data.correct + correct : correct;
+        data.incorrect = data.incorrect ? data.incorrect + incorrect : incorrect;
+        data.time = data.time ? data.time + passageData.time : passageData.time;
+
+        //1* for easy, 2* for medium, 3* for hard
+        let xp = correct * (passageData.difficulty == 'easy' ? 1 : passageData.difficulty == 'medium' ? 2 : 3);
+
+        const typedPassageRef = doc(userRef, 'passages', lang, passageId.toString());
+        const passageSnap = await getDoc(typedPassageRef);
+        const dbPassageData = passageSnap.data();
+
+        if (dbPassageData.attempts) {
+            dbPassageData.attempts.push(passageData);
+        }
+        else {
+            dbPassageData.attempts = [passageData];
+        }
+
+        await setDoc(passageSnap, dbPassageData);
+        return true;
+    }
+    catch (error) {
+        console.log(error);
+        return false;
+    }
+}

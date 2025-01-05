@@ -27,7 +27,7 @@
             correct += 1;
         } else {
             incorrect += 1;
-            incorrectKeys[letter.key] = incorrectKeys[letter.key] ? incorrectKeys[letter.key] + 1 : 1;
+            incorrectKeys[letter.correctLetter] = incorrectKeys[letter.correctLetter] ? incorrectKeys[letter.correctLetter] + 1 : 1;
             incorrectList.push(letter);
         }
     }
@@ -117,7 +117,7 @@
         </div>
     </div>
     <div class="w-full flex justify-center flex-col text-center">
-        <span class="text-2xl">keyboard heatmap</span>
+        <span class="text-2xl">missed key heatmap</span>
         <br>
         <Keyboard letters={incorrectList}/>
     </div>
