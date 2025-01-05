@@ -16,7 +16,6 @@
         }
         return acc;
     }, 0);
-    let rawWpm = ((chars / 5) / (testData.time / 60000)).toFixed(2);
     
 
     let correct = 0;
@@ -35,7 +34,10 @@
     let incorrectKeysToSort = Object.keys(incorrectKeys);
     incorrectKeysToSort.sort((a, b) => incorrectKeys[b] - incorrectKeys[a]);
 
+    let accuracy = ((correct / (correct + incorrect)) * 100).toFixed(2);
+
     let wpm  = ((correct / 5) / (testData.time / 60000)).toFixed(2);
+    let rawWpm = ((testData.keystrokes.length / 5) / (testData.time / 60000)).toFixed(2);
     
     //create an array that displays the time since the last keystroke
     //we can use this to figure out the slowest keys
@@ -60,8 +62,14 @@
     })
 </script>
 
+<style>
+    .subtext {
+        color: rgba(200, 200, 200, 0.8);
+    }
+</style>
+
 <div class="w-full flex flex-col justify-center gap-6">
-    <div class="w-full text-center flex justify-center gap-4 pt-10 text-3xl">
+    <div class="relative right-9 text-center flex justify-center gap-4 pt-10 text-3xl">
         <Language lang={testData.language} /><div class="pt-2">| {testData.difficulty}</div>
     </div>
     <div class="w-screen grid place-content-center" style="grid-template-columns: 3fr 7fr">
@@ -73,9 +81,14 @@
             <div>
                 <span class="text-2xl">wpm: {wpm}</span>
                 <br>
-                correct: {correct}
+                <span class="subtext">raw: {rawWpm}</span>
+            </div>
+            <div>
+                <span class="text-2xl">accuracy: {accuracy}%</span>
                 <br>
-                incorrect: {incorrect}
+                <span class="subtext">correct: {correct}</span>
+                <br>
+                <span class="subtext">incorrect: {incorrect}</span>
             </div>
         </div>
         <div class="mr-10 h-full max-h-[400px]">
