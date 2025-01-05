@@ -326,9 +326,11 @@ export async function getAllUnapprovedPassages() {
     return out;
 }
 
+/** make functions for deleting approved / unapproved passages as well */
+
 // ================== USER FUNCTIONS ==================
 
-export async function uploadTypedPassage(passageData, lang, passageId) {
+export async function uploadPassageStats(passageData, lang, passageId) {
     try {
         if (!user) {
             throw new NotLoggedInError("User not logged in!");

@@ -106,6 +106,9 @@
                 {key} : {incorrectKeys[key]}
                 <br>
             {/each}
+            {#if !incorrectKeysToSort.length}
+                <span>none! nice job 😎</span>
+            {/if}
         </div>
         <div>
             <span class="text-2xl">slowest keys:</span>

@@ -20,7 +20,7 @@ export let testData = {"keystrokes":[{"time":0,"key":"l","correct":true},{"time"
 
 
 /**
- * Make WPM data
+ * Make WPM data (raw)
  */
 function makeTimeData() {
     let timeData = {};
@@ -47,17 +47,11 @@ function makeTimeData() {
 }
 
 
-function movingAverage(data, windowSize) {
-    let result = [];
-    for (let i = 0; i < data.length; i++) {
-        let start = Math.max(0, i - windowSize + 1);
-        let subset = data.slice(start, i + 1);
-        let average = subset.reduce((sum, value) => sum + value, 0) / subset.length;
-        result.push(average);
-    }
-    return result;
-}
-
+/**
+ * keep a running count of the WPM for each second
+ * 
+ * @returns array of wpm for each second
+ */
 function calculateWPMForEachSecond() {
     let wpm = 0;
     let out = [];
@@ -80,8 +74,11 @@ function calculateWPMForEachSecond() {
     return out;
 }
 
+/**
+ * make the chart to display how the user did.
+ */
 export function createChart() {
-    let rawWpmArray = movingAverage(makeTimeData(), 1);
+    let rawWpmArray = makeTimeData();
 
     let correct = 0;
     for (let letter of testData.keystrokes) {
