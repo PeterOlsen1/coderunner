@@ -336,6 +336,7 @@ export async function uploadPassageStats(passageData, lang, passageId) {
             throw new NotLoggedInError("User not logged in!");
         }
 
+        //fetch overall user
         const userRef = doc(usersRef, user.uid);
         const docSnap = await getDoc(userRef);
         let data = docSnap.data();
@@ -351,12 +352,14 @@ export async function uploadPassageStats(passageData, lang, passageId) {
             }
         }
 
+        //add totals to overall user data
         data.correct = data.correct ? data.correct + correct : correct;
         data.incorrect = data.incorrect ? data.incorrect + incorrect : incorrect;
         data.time = data.time ? data.time + passageData.time : passageData.time;
 
         //1* for easy, 2* for medium, 3* for hard
         let xp = correct * (passageData.difficulty == 'easy' ? 1 : passageData.difficulty == 'medium' ? 2 : 3);
+        data.xp = data.xp ? data.xp + xp : xp;
 
         const typedPassageRef = doc(userRef, 'passages', lang, passageId.toString());
         const passageSnap = await getDoc(typedPassageRef);
