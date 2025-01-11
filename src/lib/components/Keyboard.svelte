@@ -230,7 +230,7 @@
         left: 0;
         top: 0;
         transition: top 0.2s, left 0.2s, opacity 0.2s;
-        transition-delay: opacity 1s;
+        transition-delay: 0s, 0s, 0.3s;
     }
     
     .info-window-underlay {
