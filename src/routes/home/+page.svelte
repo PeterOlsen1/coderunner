@@ -41,7 +41,7 @@
             <!-- don't use transitions on this guy since i guess it adds an extra letter -->
             <div class="w-screen h-full absolute grid top-0 left-0 place-content-center 
             passage-container" style="opacity: {showStats.state ? 0 : 1}; pointer-events: {showStats.state ? 'none' : 'auto'}">
-                <Passage />
+                <!-- <Passage /> -->
             </div>
         </div>
     </div>

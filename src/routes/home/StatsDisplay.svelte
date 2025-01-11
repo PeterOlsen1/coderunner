@@ -17,7 +17,7 @@
         return acc;
     }, 0);
     
-
+    //extract data from testData
     let correct = 0;
     let incorrect = 0;
     let incorrectKeys = {};
@@ -100,17 +100,24 @@
     </div>
     <div class="w-full grid grid-cols-2 place-items-center text-center">
         <div class="flex flex-col align-top h-full">
+
+            <!-- display missed keys -->
             <span class="text-2xl">missed keys:</span>
             <br>
-            {#each incorrectKeysToSort as key}
+            {#each incorrectKeysToSort.slice(0, 9) as key}
                 {key} : {incorrectKeys[key]}
                 <br>
             {/each}
+            {#if incorrectKeysToSort.length > 9}
+                <span>and {incorrectKeysToSort.length - 9} more...</span>
+            {/if}
             {#if !incorrectKeysToSort.length}
                 <span>none! nice job 😎</span>
             {/if}
         </div>
         <div>
+
+            <!-- display slowest keys -->
             <span class="text-2xl">slowest keys:</span>
             <br>
             {#each timeSinceLastTopTen as timeSinceLastArray}

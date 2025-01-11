@@ -16,8 +16,692 @@ Chart.defaults.font = {
 export let showStats = $state({state: true});
 
 // export let testData = $state({keystrokes: []});
-export let testData = {"keystrokes":[{"time":0,"key":"l","correct":true},{"time":60,"key":"e","correct":true},{"time":160,"key":"t","correct":true},{"time":180,"key":" ","correct":true},{"time":310,"key":"r","correct":true},{"time":380,"key":"e","correct":true},{"time":530,"key":"c","correct":true},{"time":1370,"key":" ","correct":true},{"time":1510,"key":"m","correct":true},{"time":1620,"key":"a","correct":true},{"time":1710,"key":"p","correct":true},{"time":2000,"key":"_","correct":true},{"time":2320,"key":"l","correct":true},{"time":2380,"key":"t","correct":true},{"time":2540,"key":"r","correct":true},{"time":2700,"key":"e","correct":true},{"time":2820,"key":"e","correct":true},{"time":3090,"key":" ","correct":true},{"time":3410,"key":"(","correct":true},{"time":3870,"key":"f","correct":true},{"time":4340,"key":" ","correct":true},{"time":4530,"key":"'","correct":false,"correctLetter":":"},{"time":5880,"key":":","correct":true},{"time":6020,"key":" ","correct":true},{"time":6160,"key":"'","correct":true},{"time":6250,"key":"a","correct":true},{"time":6410,"key":" ","correct":true},{"time":6490,"key":"=","correct":false,"correctLetter":"-"},{"time":7370,"key":"=","correct":false,"correctLetter":"-"},{"time":7890,"key":"-","correct":true},{"time":8120,"key":">","correct":true},{"time":8380,"key":" ","correct":true},{"time":8550,"key":"'","correct":true},{"time":8660,"key":"b","correct":true},{"time":9160,"key":")","correct":true},{"time":9640,"key":" ","correct":true},{"time":9920,"key":"(","correct":true},{"time":10210,"key":"t","correct":true},{"time":10650,"key":" ","correct":true},{"time":10820,"key":":","correct":true},{"time":10940,"key":" ","correct":true},{"time":11170,"key":"'","correct":true},{"time":11250,"key":"a","correct":true},{"time":11550,"key":" ","correct":true},{"time":11820,"key":"l","correct":true},{"time":11940,"key":"t","correct":true},{"time":12090,"key":"r","correct":true},{"time":12250,"key":"e","correct":true},{"time":12370,"key":"e","correct":true},{"time":12630,"key":")","correct":true},{"time":12900,"key":" ","correct":true},{"time":13070,"key":":","correct":true},{"time":13250,"key":" ","correct":true},{"time":13400,"key":"'","correct":true},{"time":13590,"key":"b","correct":true},{"time":13990,"key":" ","correct":true},{"time":14290,"key":"l","correct":true},{"time":14400,"key":"t","correct":true},{"time":14540,"key":"r","correct":true},{"time":14670,"key":"e","correct":true},{"time":14810,"key":"e","correct":true},{"time":15020,"key":" ","correct":true},{"time":15190,"key":"=","correct":true},{"time":15910,"key":" ","correct":true},{"time":16920,"key":" ","correct":true},{"time":17060,"key":"m","correct":true},{"time":17170,"key":"a","correct":true},{"time":17270,"key":"t","correct":true},{"time":17430,"key":"c","correct":true},{"time":17510,"key":"h","correct":true},{"time":17670,"key":" ","correct":true},{"time":17810,"key":"t","correct":true},{"time":17970,"key":" ","correct":true},{"time":18140,"key":"w","correct":true},{"time":18200,"key":"i","correct":true},{"time":18270,"key":"t","correct":true},{"time":18320,"key":"h","correct":true},{"time":19380,"key":"h","correct":true},{"time":20200,"key":"|","correct":true},{"time":20450,"key":" ","correct":true},{"time":20680,"key":"L","correct":true},{"time":20900,"key":"e","correct":true},{"time":21030,"key":"a","correct":true},{"time":21140,"key":"f","correct":true},{"time":21950,"key":" ","correct":true},{"time":22140,"key":"9","correct":false,"correctLetter":"("},{"time":22390,"key":"N","correct":false,"correctLetter":"n"},{"time":23360,"key":"(","correct":true},{"time":23500,"key":"n","correct":true},{"time":23770,"key":")","correct":true},{"time":24470,"key":" ","correct":true},{"time":24630,"key":"-","correct":true},{"time":25910,"key":">","correct":true},{"time":26200,"key":" ","correct":true},{"time":26440,"key":"L","correct":true},{"time":26570,"key":"e","correct":true},{"time":26660,"key":"a","correct":true},{"time":26740,"key":"f","correct":true},{"time":26950,"key":" ","correct":true},{"time":27180,"key":"(","correct":true},{"time":27430,"key":"f","correct":true},{"time":27570,"key":" ","correct":true},{"time":27730,"key":"n","correct":true},{"time":28670,"key":")","correct":true},{"time":29470,"key":"}","correct":false,"correctLetter":"|"},{"time":30410,"key":"|","correct":true},{"time":30630,"key":" ","correct":true},{"time":30860,"key":"B","correct":true},{"time":30960,"key":"r","correct":true},{"time":31070,"key":"a","correct":true},{"time":31200,"key":"n","correct":true},{"time":31510,"key":"c","correct":true},{"time":31600,"key":"h","correct":true},{"time":31720,"key":" ","correct":true},{"time":31980,"key":"(","correct":true},{"time":32230,"key":"l","correct":true},{"time":33160,"key":",","correct":true},{"time":33250,"key":" ","correct":true},{"time":33340,"key":"r","correct":true},{"time":33670,"key":")","correct":true},{"time":33930,"key":" ","correct":true},{"time":34040,"key":"=","correct":false,"correctLetter":"-"},{"time":34840,"key":"-","correct":true},{"time":35060,"key":">","correct":true},{"time":35310,"key":" ","correct":true},{"time":35520,"key":"B","correct":true},{"time":35610,"key":"r","correct":true},{"time":35750,"key":"a","correct":true},{"time":35800,"key":"n","correct":true},{"time":35900,"key":"c","correct":true},{"time":35980,"key":"h","correct":true},{"time":36070,"key":" ","correct":true},{"time":36810,"key":" ","correct":true},{"time":37130,"key":"(","correct":true},{"time":37240,"key":"(","correct":true},{"time":37450,"key":"m","correct":true},{"time":37540,"key":"a","correct":true},{"time":37640,"key":"p","correct":true},{"time":38290,"key":"_","correct":true},{"time":38580,"key":"l","correct":true},{"time":38690,"key":"t","correct":true},{"time":38850,"key":"r","correct":true},{"time":38990,"key":"e","correct":true},{"time":39130,"key":"e","correct":true},{"time":39550,"key":" ","correct":true},{"time":39670,"key":"f","correct":true},{"time":39940,"key":" ","correct":true},{"time":40110,"key":"l","correct":true},{"time":40450,"key":")","correct":true},{"time":40760,"key":",","correct":true},{"time":40900,"key":" ","correct":true},{"time":41200,"key":"(","correct":true},{"time":41420,"key":"m","correct":true},{"time":41510,"key":"a","correct":true},{"time":41590,"key":"p","correct":true},{"time":41870,"key":"_","correct":true},{"time":42400,"key":"l","correct":true},{"time":42400,"key":";","correct":false,"correctLetter":"t"},{"time":43020,"key":"t","correct":true},{"time":43180,"key":"r","correct":true},{"time":43340,"key":"e","correct":true},{"time":43460,"key":"e","correct":true},{"time":44040,"key":" ","correct":true},{"time":44180,"key":"f","correct":true},{"time":44230,"key":" ","correct":true},{"time":44390,"key":"r","correct":true},{"time":44850,"key":")","correct":true},{"time":44940,"key":")","correct":true}],"language":"ocaml","passage":"let rec map_ltree (f : 'a -> 'b) (t : 'a ltree) : 'b ltree =\n  match t with\n  | Leaf (n) -> Leaf (f n)\n  | Branch (l, r) -> Branch ((map_ltree f l), (map_ltree f r))","difficulty":"easy","time":44940}
-
+export let testData = $state({
+    "keystrokes": [
+        {
+            "time": 0,
+            "key": "f",
+            "correct": true
+        },
+        {
+            "time": 100,
+            "key": "a",
+            "correct": true
+        },
+        {
+            "time": 220,
+            "key": "c",
+            "correct": true
+        },
+        {
+            "time": 400,
+            "key": "t",
+            "correct": true
+        },
+        {
+            "time": 460,
+            "key": "o",
+            "correct": true
+        },
+        {
+            "time": 550,
+            "key": "r",
+            "correct": true
+        },
+        {
+            "time": 650,
+            "key": "i",
+            "correct": true
+        },
+        {
+            "time": 720,
+            "key": "a",
+            "correct": true
+        },
+        {
+            "time": 820,
+            "key": "l",
+            "correct": true
+        },
+        {
+            "time": 1100,
+            "key": "R",
+            "correct": true
+        },
+        {
+            "time": 1180,
+            "key": "e",
+            "correct": true
+        },
+        {
+            "time": 1350,
+            "key": "c",
+            "correct": true
+        },
+        {
+            "time": 1390,
+            "key": "u",
+            "correct": true
+        },
+        {
+            "time": 1540,
+            "key": "s",
+            "correct": false,
+            "correctLetter": "r"
+        },
+        {
+            "time": 1760,
+            "key": "t",
+            "correct": false,
+            "correctLetter": "s"
+        },
+        {
+            "time": 1820,
+            "key": "i",
+            "correct": true
+        },
+        {
+            "time": 2700,
+            "key": "r",
+            "correct": false,
+            "correctLetter": "u"
+        },
+        {
+            "time": 3420,
+            "key": "u",
+            "correct": true
+        },
+        {
+            "time": 3520,
+            "key": "r",
+            "correct": true
+        },
+        {
+            "time": 3730,
+            "key": "s",
+            "correct": true
+        },
+        {
+            "time": 3770,
+            "key": "i",
+            "correct": true
+        },
+        {
+            "time": 3880,
+            "key": "v",
+            "correct": true
+        },
+        {
+            "time": 3980,
+            "key": "e",
+            "correct": true
+        },
+        {
+            "time": 4040,
+            "key": " ",
+            "correct": true
+        },
+        {
+            "time": 4240,
+            "key": ":",
+            "correct": true
+        },
+        {
+            "time": 4350,
+            "key": ";",
+            "correct": false,
+            "correctLetter": ":"
+        },
+        {
+            "time": 4450,
+            "key": " ",
+            "correct": true
+        },
+        {
+            "time": 4640,
+            "key": "i",
+            "correct": false,
+            "correctLetter": "I"
+        },
+        {
+            "time": 4700,
+            "key": "n",
+            "correct": true
+        },
+        {
+            "time": 4800,
+            "key": "t",
+            "correct": true
+        },
+        {
+            "time": 4890,
+            "key": "e",
+            "correct": true
+        },
+        {
+            "time": 5110,
+            "key": "g",
+            "correct": true
+        },
+        {
+            "time": 5190,
+            "key": "e",
+            "correct": true
+        },
+        {
+            "time": 5290,
+            "key": "r",
+            "correct": true
+        },
+        {
+            "time": 5380,
+            "key": " ",
+            "correct": true
+        },
+        {
+            "time": 5490,
+            "key": "-",
+            "correct": true
+        },
+        {
+            "time": 5660,
+            "key": ">",
+            "correct": true
+        },
+        {
+            "time": 5820,
+            "key": " ",
+            "correct": true
+        },
+        {
+            "time": 6030,
+            "key": "I",
+            "correct": true
+        },
+        {
+            "time": 6110,
+            "key": "n",
+            "correct": true
+        },
+        {
+            "time": 6230,
+            "key": "t",
+            "correct": true
+        },
+        {
+            "time": 6320,
+            "key": "e",
+            "correct": true
+        },
+        {
+            "time": 6440,
+            "key": "g",
+            "correct": true
+        },
+        {
+            "time": 6540,
+            "key": "e",
+            "correct": true
+        },
+        {
+            "time": 6620,
+            "key": "r",
+            "correct": true
+        },
+        {
+            "time": 6930,
+            "key": "f",
+            "correct": true
+        },
+        {
+            "time": 7020,
+            "key": "a",
+            "correct": true
+        },
+        {
+            "time": 7130,
+            "key": "c",
+            "correct": true
+        },
+        {
+            "time": 7310,
+            "key": "t",
+            "correct": true
+        },
+        {
+            "time": 7370,
+            "key": "o",
+            "correct": true
+        },
+        {
+            "time": 7440,
+            "key": "r",
+            "correct": true
+        },
+        {
+            "time": 7510,
+            "key": "i",
+            "correct": true
+        },
+        {
+            "time": 7590,
+            "key": "a",
+            "correct": true
+        },
+        {
+            "time": 7650,
+            "key": "l",
+            "correct": true
+        },
+        {
+            "time": 7830,
+            "key": "R",
+            "correct": true
+        },
+        {
+            "time": 7900,
+            "key": "e",
+            "correct": true
+        },
+        {
+            "time": 8050,
+            "key": "c",
+            "correct": true
+        },
+        {
+            "time": 8150,
+            "key": "u",
+            "correct": true
+        },
+        {
+            "time": 8270,
+            "key": "r",
+            "correct": true
+        },
+        {
+            "time": 8430,
+            "key": "s",
+            "correct": true
+        },
+        {
+            "time": 8480,
+            "key": "i",
+            "correct": true
+        },
+        {
+            "time": 8590,
+            "key": "v",
+            "correct": true
+        },
+        {
+            "time": 8670,
+            "key": "e",
+            "correct": true
+        },
+        {
+            "time": 8760,
+            "key": " ",
+            "correct": true
+        },
+        {
+            "time": 8840,
+            "key": "=",
+            "correct": false,
+            "correctLetter": "0"
+        },
+        {
+            "time": 8930,
+            "key": " ",
+            "correct": true
+        },
+        {
+            "time": 9080,
+            "key": "1",
+            "correct": false,
+            "correctLetter": "="
+        },
+        {
+            "time": 10500,
+            "key": "9",
+            "correct": false,
+            "correctLetter": "0"
+        },
+        {
+            "time": 11540,
+            "key": " ",
+            "correct": true
+        },
+        {
+            "time": 12280,
+            "key": "0",
+            "correct": true
+        },
+        {
+            "time": 12590,
+            "key": " ",
+            "correct": true
+        },
+        {
+            "time": 12710,
+            "key": "=",
+            "correct": true
+        },
+        {
+            "time": 12820,
+            "key": " ",
+            "correct": true
+        },
+        {
+            "time": 13060,
+            "key": "1",
+            "correct": true
+        },
+        {
+            "time": 13800,
+            "key": "f",
+            "correct": true
+        },
+        {
+            "time": 13900,
+            "key": "a",
+            "correct": true
+        },
+        {
+            "time": 14010,
+            "key": "c",
+            "correct": true
+        },
+        {
+            "time": 14130,
+            "key": "o",
+            "correct": false,
+            "correctLetter": "t"
+        },
+        {
+            "time": 14250,
+            "key": "t",
+            "correct": false,
+            "correctLetter": "o"
+        },
+        {
+            "time": 14340,
+            "key": "i",
+            "correct": false,
+            "correctLetter": "r"
+        },
+        {
+            "time": 14410,
+            "key": "r",
+            "correct": false,
+            "correctLetter": "i"
+        },
+        {
+            "time": 14510,
+            "key": "l",
+            "correct": false,
+            "correctLetter": "a"
+        },
+        {
+            "time": 14560,
+            "key": "a",
+            "correct": false,
+            "correctLetter": "l"
+        },
+        {
+            "time": 15040,
+            "key": "R",
+            "correct": true
+        },
+        {
+            "time": 15120,
+            "key": "e",
+            "correct": true
+        },
+        {
+            "time": 15280,
+            "key": "c",
+            "correct": true
+        },
+        {
+            "time": 15320,
+            "key": "u",
+            "correct": true
+        },
+        {
+            "time": 15450,
+            "key": "s",
+            "correct": false,
+            "correctLetter": "r"
+        },
+        {
+            "time": 15590,
+            "key": "t",
+            "correct": false,
+            "correctLetter": "s"
+        },
+        {
+            "time": 15640,
+            "key": "i",
+            "correct": true
+        },
+        {
+            "time": 15770,
+            "key": "v",
+            "correct": true
+        },
+        {
+            "time": 15870,
+            "key": "e",
+            "correct": true
+        },
+        {
+            "time": 16520,
+            "key": " ",
+            "correct": true
+        },
+        {
+            "time": 16630,
+            "key": "n",
+            "correct": true
+        },
+        {
+            "time": 16780,
+            "key": " ",
+            "correct": true
+        },
+        {
+            "time": 16850,
+            "key": "=",
+            "correct": true
+        },
+        {
+            "time": 16940,
+            "key": " ",
+            "correct": true
+        },
+        {
+            "time": 17170,
+            "key": "n",
+            "correct": true
+        },
+        {
+            "time": 17290,
+            "key": " ",
+            "correct": true
+        },
+        {
+            "time": 17490,
+            "key": "*",
+            "correct": true
+        },
+        {
+            "time": 17600,
+            "key": " ",
+            "correct": true
+        },
+        {
+            "time": 18060,
+            "key": "f",
+            "correct": true
+        },
+        {
+            "time": 18170,
+            "key": "a",
+            "correct": true
+        },
+        {
+            "time": 18270,
+            "key": "c",
+            "correct": true
+        },
+        {
+            "time": 18490,
+            "key": "t",
+            "correct": true
+        },
+        {
+            "time": 18500,
+            "key": "o",
+            "correct": true
+        },
+        {
+            "time": 18640,
+            "key": "r",
+            "correct": true
+        },
+        {
+            "time": 18670,
+            "key": "i",
+            "correct": true
+        },
+        {
+            "time": 18820,
+            "key": "a",
+            "correct": true
+        },
+        {
+            "time": 18940,
+            "key": "l",
+            "correct": true
+        },
+        {
+            "time": 18950,
+            "key": ";",
+            "correct": false,
+            "correctLetter": "R"
+        },
+        {
+            "time": 19140,
+            "key": "R",
+            "correct": false,
+            "correctLetter": "e"
+        },
+        {
+            "time": 19220,
+            "key": "e",
+            "correct": false,
+            "correctLetter": "c"
+        },
+        {
+            "time": 20050,
+            "key": "R",
+            "correct": true
+        },
+        {
+            "time": 20120,
+            "key": "e",
+            "correct": true
+        },
+        {
+            "time": 20290,
+            "key": "c",
+            "correct": true
+        },
+        {
+            "time": 20330,
+            "key": "u",
+            "correct": true
+        },
+        {
+            "time": 20430,
+            "key": "s",
+            "correct": false,
+            "correctLetter": "r"
+        },
+        {
+            "time": 20620,
+            "key": "t",
+            "correct": false,
+            "correctLetter": "s"
+        },
+        {
+            "time": 20670,
+            "key": "i",
+            "correct": true
+        },
+        {
+            "time": 20780,
+            "key": "v",
+            "correct": true
+        },
+        {
+            "time": 20870,
+            "key": "e",
+            "correct": true
+        },
+        {
+            "time": 21020,
+            "key": " ",
+            "correct": true
+        },
+        {
+            "time": 21290,
+            "key": "(",
+            "correct": true
+        },
+        {
+            "time": 21500,
+            "key": "n",
+            "correct": true
+        },
+        {
+            "time": 21860,
+            "key": " ",
+            "correct": true
+        },
+        {
+            "time": 21970,
+            "key": "-",
+            "correct": true
+        },
+        {
+            "time": 22060,
+            "key": " ",
+            "correct": true
+        },
+        {
+            "time": 22180,
+            "key": "1",
+            "correct": true
+        },
+        {
+            "time": 22530,
+            "key": ")",
+            "correct": true
+        }
+    ],
+    "language": "haskell",
+    "passage": "factorialRecursive :: Integer -> Integer\nfactorialRecursive 0 = 1\nfactorialRecursive n = n * factorialRecursive (n - 1)",
+    "difficulty": "easy",
+    "time": 22530,
+    "missedWords": [
+        "factorialRecursive",
+        "::",
+        "Integer",
+        "0",
+        "="
+    ]
+})
 
 /**
  * Make WPM data (raw)

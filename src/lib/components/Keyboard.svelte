@@ -2,6 +2,7 @@
     import { onMount } from 'svelte';
     let { letters } = $props();
     let keyboard;
+    let infoWindow;
     let keymap = {
         '`': [1, 1],
         '~': [1, 1],
@@ -100,28 +101,76 @@
     //make and populate a frequency table
     let frequency = {};
     for (let letter of letters) {
-        console.log(letter);
         let coord = keymap[letter.correctLetter.toUpperCase()];
         frequency[coord] = frequency[coord] ? frequency[coord] + 1 : 1;
     }
 
-    //sort it by most / least frequent
-    let frequencyToSort = Object.keys(frequency);
-    frequencyToSort.sort((a, b) => frequency[b] - frequency[a]);
+    //get all of the different frequencies
+    let differentFrequencies = [];
+    Object.keys(frequency).forEach(coord => {
+        if (!differentFrequencies.includes(frequency[coord])) {
+            differentFrequencies.push(frequency[coord]);
+        }
+    });
+    differentFrequencies.sort();
+    differentFrequencies.reverse();
     
     //create a color gradient
     let colorGradient = [];
-    for (let i = 0; i < frequencyToSort.length; i++) {
-        let color = `rgba(255, 0, 0, ${1 - (i / frequencyToSort.length)})`;
+    for (let i = 0; i < differentFrequencies.length; i++) {
+        let color = `rgba(255, 0, 0, ${1 - (i / differentFrequencies.length)})`;
         colorGradient.push(color);
     }
-    
+
+
+    /**
+     * move the info window to the key that was hovered
+     * and change the text
+     * 
+     * @param e
+     */
+    function moveInfoWindow(e) {
+        console.log(infoWindow);
+        console.log(e.target.getBoundingClientRect());
+        let rect = e.target.getBoundingClientRect();
+        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        let scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+
+        infoWindow.style.left = `calc(${rect.x + scrollLeft}px - 1em)`;
+        infoWindow.style.top = `calc(${rect.top + scrollTop}px - 4.2em)`;
+
+        let letters = e.target.innerText.split("");
+        let innerText = "";
+        for (let letter in letters) {   
+            innerText += letter + ": " + frequency[keymap[letter.toUpperCase()]] + "\n";
+        }
+        infoWindow.innerText = innerText;
+        infoWindow.style.opacity = 1;
+    }
+
+    function hideInfoWindow() {
+        infoWindow.style.opacity = 0;
+    }
+
+    /**
+     * add event listeners to all missed keys
+     */
+    function addEventListeners() {
+        Object.keys(frequency).forEach((coord, i) => {
+            let key = getKey('', JSON.parse(`[${coord}]`));
+            key.addEventListener('mouseenter', moveInfoWindow);
+            key.addEventListener('mouseleave', hideInfoWindow);
+        });
+    }
+
     //color keys on component mount
     onMount(() => {
-        console.log(frequency);
-        frequencyToSort.forEach((coord, i) => {
+        addEventListeners();
+
+        Object.keys(frequency).forEach((coord, i) => {
             let key = getKey('', JSON.parse(`[${coord}]`));
-            key.style.backgroundColor = colorGradient[i];
+            let freqIndex = differentFrequencies.indexOf(frequency[coord]);
+            key.style.backgroundColor = colorGradient[freqIndex];
         });
     });
 </script>
@@ -169,8 +218,27 @@
     .keyboard {
         margin-bottom: 2em;
     }
-</style>
 
+    .info-window {
+        width: 4em;
+        height: 4em;
+        overflow: hidden;
+        word-wrap: break-word;
+        background-color: rgba(200, 200, 200, 0.443);
+        border: 1px solid white;
+        position: absolute;
+        left: 0;
+        top: 0;
+        transition: top 0.2s, left 0.2s, opacity 0.2s;
+        transition-delay: opacity 1s;
+    }
+    
+    .info-window-underlay {
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0);
+    }
+</style>
 
 <div bind:this={keyboard} class="flex flex-col justify-center keyboard">
     <div class="row-1 row">
@@ -236,5 +304,8 @@
     </div>
     <div class="row-5 row">
         <div class="key space"></div>
+    </div>
+    <div bind:this={infoWindow} class="info-window">
+        <div class="info-window-underlay"></div>
     </div>
 </div>

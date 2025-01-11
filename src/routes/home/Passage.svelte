@@ -11,10 +11,10 @@
     let lines, all, words;
 
     /** List of selected languages*/
-    let selectedLanguages = ['python'];
+    let selectedLanguages = ['lua'];
 
     /** current language */
-    let language = $state('python');
+    let language = $state('lua');
 
     /** No languages selcted*/
     let noneSelected = $state(false);
@@ -178,6 +178,7 @@
             testData.language = language;
             testData.passage = text;
             testData.difficulty = difficulty;
+            testData.missedWords = [];
         }
 
         lastInput = time;
@@ -383,6 +384,10 @@
         //user is at the end of a line. don't let them go any further
         if (word == all[line].length - 1 && curWordIdx == all[line][word].length) {
             return;
+        }
+
+        if (!testData.missedWords.includes(all[line][word])) {
+            testData.missedWords.push(all[line][word]);
         }
 
         curIdx++;

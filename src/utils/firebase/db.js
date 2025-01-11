@@ -330,6 +330,14 @@ export async function getAllUnapprovedPassages() {
 
 // ================== USER FUNCTIONS ==================
 
+/**
+ * Upload data about a passage someone typed
+ * 
+ * @param {*} passageData 
+ * @param {string} lang 
+ * @param {number} passageId 
+ * @returns 
+ */
 export async function uploadPassageStats(passageData, lang, passageId) {
     try {
         if (!user) {
